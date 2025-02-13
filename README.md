@@ -61,19 +61,16 @@ docker run hello-world
 
 ## Cloning and Setting Up srsRAN
 
-### Step 1: Clone the Project Repository
+### Step 1: Clone the srsRAN Project Repository and checkout
 ```bash
+cd RAN
 git clone https://github.com/srsran/srsRAN_Project.git
 cd srsRAN_Project
-```
-
-### Step 2: Checkout Specific Commit
-```bash
 git checkout e5d5b44
 cd ../..
 ```
 
-### Step 3: Build UE
+### Step 2: Build UE
 ```bash
 cd UE/
 git clone https://github.com/srsran/srsRAN_4G.git
@@ -81,11 +78,11 @@ cd srsRAN_4G
 mkdir build
 cd build
 cmake ../
-make
-cd ../../
+make -j$(nproc)
+cd ../../../
 ```
 
-### Step 4: Clone and Set Up RIC
+### Step 3: Clone and Set Up RIC
 ```bash
 mkdir -p RIC
 cd RIC/
@@ -95,7 +92,7 @@ cd ../
 
 ## Running the Setup
 
-### Terminal 1: Prepare and Start RIC
+### Terminal 1: Prepare and Start RIC from root directory
 ```bash
 cp -f setup/srsRAN_Project/docker-compose.yml RAN/srsRAN_Project/docker/
 cp -f setup/srsRAN_Project/open5gs.env RAN/srsRAN_Project/docker/open5gs
@@ -103,14 +100,13 @@ cp -f setup/srsRAN_Project/subscriber_db.csv RAN/srsRAN_Project/docker/open5gs
 cp -f setup/oran-sc-ric/docker-compose.yml RIC/oran-sc-ric/
 
 ```
-
 Then, start RIC:
 ```bash
 cd RIC/oran-sc-ric
 docker compose up
 ```
 
-### Terminal 2: Start srsRAN
+### Terminal 2: Start srsRAN from root directory
 ```bash
 docker compose up
 ```
