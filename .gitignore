@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+RAN/srsRAN_Project/build
+UE/srsRAN_4G
+RIC/oran-sc-ric
+!RIC
+xApps
+RAN/srsRAN_Project
+RAN/srsRAN_Project.tar.gz
+setup/oran-sc-ric
+setup/prometheus-data
