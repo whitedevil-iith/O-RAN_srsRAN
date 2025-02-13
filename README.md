@@ -5,6 +5,11 @@ Ensure your system is up to date before proceeding with the installation.
 
 ```bash
 sudo apt-get update && sudo apt-get upgrade -y
+
+# Install cmake and make
+sudo apt-get update
+sudo apt-get install -y cmake make
+
 ```
 
 ## Docker Installation
@@ -82,6 +87,7 @@ cd ../../
 
 ### Step 4: Clone and Set Up RIC
 ```bash
+mkdir -p RIC
 cd RIC/
 git clone https://github.com/srsran/oran-sc-ric.git
 cd ../
@@ -94,6 +100,8 @@ cd ../
 cp -f setup/srsRAN_Project/docker-compose.yml RAN/srsRAN_Project/docker/
 cp -f setup/srsRAN_Project/open5gs.env RAN/srsRAN_Project/docker/open5gs
 cp -f setup/srsRAN_Project/subscriber_db.csv RAN/srsRAN_Project/docker/open5gs
+cp -f setup/oran-sc-ric/docker-compose.yml RIC/oran-sc-ric/
+
 ```
 
 Then, start RIC:
