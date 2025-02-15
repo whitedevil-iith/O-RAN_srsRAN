@@ -12,7 +12,7 @@ sudo apt-get install -y cmake make
 
 ```
 
-## Docker Installation
+## Docker and dependencies Installation
 
 The following script removes any existing Docker installations and installs the latest version:
 
