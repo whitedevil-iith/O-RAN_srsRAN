@@ -14,7 +14,7 @@ sudo apt-get install -y cmake make
 
 ## Docker and dependencies Installation
 
-The following script removes any existing Docker installations and installs the latest version:
+The following script removes any existing Docker installations and installs the latest version along with srsRAN_4G dependencies:
 
 ```bash
 #!/bin/bash
