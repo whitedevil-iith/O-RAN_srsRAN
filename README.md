@@ -99,6 +99,8 @@ cp -f setup/srsRAN_Project/docker-compose.yml RAN/srsRAN_Project/docker/
 cp -f setup/srsRAN_Project/open5gs.env RAN/srsRAN_Project/docker/open5gs
 cp -f setup/srsRAN_Project/subscriber_db.csv RAN/srsRAN_Project/docker/open5gs
 cp -f setup/oran-sc-ric/docker-compose.yml RIC/oran-sc-ric/
+cp -f setup/srsRAN_Project/Dockerfile RAN/srsRAN_Project/docker/
+cp -f setup/srsRAN_Project/install_dependencies.sh RAN/srsRAN_Project/docker/scripts/install_dependencies.sh
 
 ```
 Then, start RIC:
