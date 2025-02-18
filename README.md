@@ -1,4 +1,4 @@
-# srsRAN with RIC, grafana and Prometheus Setup Guide
+# srsRAN with RIC, grafana and Prometheus $Setup Guide
 
 ## Prerequisites
 Ensure your system is up to date before proceeding with the installation.
@@ -18,7 +18,7 @@ The following script removes any existing Docker installations and installs the 
 
 ```bash
 #!/bin/bash
-
+$
 # Remove existing Docker packages
 for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc; do
     sudo apt-get remove -y $pkg;
@@ -34,9 +34,9 @@ sudo chmod a+r /etc/apt/keyrings/docker.asc
 # Add Docker repository:
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# Install Docker
+# Install Docker and other dependencies for srsUE_4G
 sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin build-essential cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin build-essential cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev libzmq3-dev
 
 
 # Verify Docker installation
