@@ -1,4 +1,4 @@
-# srsRAN with RIC, grafana adSetup Guide
+# srsRAN with RIC, grafana and Prometheus Setup Guide
 
 ## Prerequisites
 Ensure your system is up to date before proceeding with the installation.
@@ -58,6 +58,10 @@ newgrp docker
 Then, verify Docker runs without sudo:
 ```bash
 docker run hello-world
+```
+Then, create the docker network required for the setup:
+```bash
+docker network create --subnet=10.0.0.0/8 oran-intel
 ```
 
 ## Cloning and Setting Up srsRAN

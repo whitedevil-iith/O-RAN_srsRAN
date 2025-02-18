@@ -253,7 +253,7 @@ services:
     networks:
       oran-intel:
         ipv4_address: 10.53.1.251
-    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf'
+    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf & if [ "$PING" = "on" ]; then ./ping.sh 10.45.1.1; fi'
 
   ue1:
     container_name: srsue1
@@ -278,7 +278,7 @@ services:
     networks:
       oran-intel:
         ipv4_address: 10.53.1.151
-    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf'
+    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf & if [ "$PING" = "on" ]; then ./ping.sh 10.45.1.2; fi'
 
   ue2:
     container_name: srsue2
@@ -303,7 +303,7 @@ services:
     networks:
       oran-intel:
         ipv4_address: 10.53.1.82
-    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf'
+    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf & if [ "$PING" = "on" ]; then ./ping.sh 10.45.1.3; fi'
 
   ue3:
     container_name: srsue3
@@ -329,7 +329,7 @@ services:
     networks:
       oran-intel:
         ipv4_address: 10.53.1.92
-    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf'
+    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf & if [ "$PING" = "on" ]; then ./ping.sh 10.45.1.4; fi'
 
   metrics-server:
     container_name: metrics_server
