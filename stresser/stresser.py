@@ -7,6 +7,14 @@ import numpy as np
 import signal
 import sys
 import csv
+import json
+
+import csv
+import threading
+import time
+
+import csv
+import time
 
 # Global list to track PIDs of stress processes
 stress_pids = []
@@ -15,11 +23,7 @@ packetLoss_Containers = None
 file = {}
 save_thread = None
 
-# Run the Docker command to get the container IDs
-# command = "docker ps -a --filter 'name=cu' --filter 'name=du' -q"
-# container_ids = subprocess.check_output(command, shell=True).decode().strip().split('\n')
-
-command = "docker ps -a --filter 'name=cu' --filter 'name=du' --format '{{.Names}}'"
+command = "docker ps -a --filter 'name=srscu' --filter 'name=srsdu' --format '{{.Names}}'"
 container_ids = subprocess.check_output(command, shell=True).decode().strip().split('\n')
 
 
@@ -28,28 +32,12 @@ for cid in container_ids:
     file[cid] = [0, 0]
 
 
-import csv
-import threading
-import time
-
-# Assuming 'file' is your global dictionary containing the stress type for each container
-# Example:
-# file = {'container1': (1, 70), 'container2': (2, 80)}
-
-
-import csv
-import time
-
-# Assuming 'file' is your global dictionary containing the stress type and step stress for each container
-# Example:
-# file = {'container1': (1, 70), 'container2': (2, 80)}
-# Function to save the 'file' dictionary to a CSV file every 45 seconds
 def save_to_file():
     """Function to save the 'file' dictionary to a CSV file every 45 seconds."""
     while True:
         with lock:
             # Open the CSV file in write mode (this will overwrite the file)
-            with open('file_data.csv', 'w', newline='') as csvfile:
+            with open('stresser/file_data.csv', 'w', newline='') as csvfile:
                 # Define the fieldnames (dynamic columns based on container IDs)
                 fieldnames = []
 
@@ -232,12 +220,12 @@ def main():
 
     # max_duration = 10*60
 
-    cmd = "docker ps --filter 'name=^cu' --filter 'name=^du' --format '{{.ID}}'"
+    cmd = "docker ps --filter 'name=^srscu' --filter 'name=^srsdu' --format '{{.ID}}'"
     container_ids = subprocess.check_output(cmd, shell=True).decode().splitlines()
     print(f"Fetched container IDs: {container_ids}")
     packetLoss_Containers = container_ids
-    for container_id in container_ids:
-        ensure_stress_ng_installed(container_id)
+    # for container_id in container_ids:
+    #     ensure_stress_ng_installed(container_id)
     # Start the background thread to save the 'file' dictionary every 500ms
     global save_thread
     save_thread = threading.Thread(target=save_to_file)

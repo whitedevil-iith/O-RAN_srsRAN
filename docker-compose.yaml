@@ -382,11 +382,89 @@ services:
       oran-intel:
         ipv4_address: 10.40.1.6
 
+  # node-exporter:
+  #   image: prom/node-exporter:latest
+  #   container_name: node-exporter
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /:/rootfs:ro
+  #   command:
+  #     - '--path.procfs=/host/proc'
+  #     - '--path.rootfs=/rootfs'
+  #     - '--path.sysfs=/host/sys'
+  #     - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+  #   expose:
+  #     - 9100
+  #   networks:
+  #     oran-intel:
+  #       ipv4_address: 10.24.0.4
+
+
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: prometheus
+  #   ports:
+  #   - 9090:9090
+  #   command:
+  #   - --config.file=/etc/prometheus/prometheus.yml
+  #   volumes:
+  #     - prometheus-storage:/etc/prometheus
+  #   # Uncomment the following line to use the prometheus.yml file from the setup folder
+  #   # - ./setup/prometheus:/prometheus
+  #   depends_on:
+  #   - cadvisor
+  #   - node-exporter
+  #   networks:
+  #     oran-intel:
+  #       ipv4_address: 10.24.0.3
+
+
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:v0.47.2
+  #   container_name: cadvisor
+  #   ports:
+  #   - 8080:8080
+  #   volumes:
+  #   - /:/rootfs:ro
+  #   - /var/run:/var/run:rw
+  #   - /sys:/sys:ro
+  #   - /var/lib/docker/:/var/lib/docker:ro
+  #   devices:
+  #     - /dev/kmsg:/dev/kmsg
+  #   privileged: true
+  #   # command:
+  #     # - "--docker-only"
+  #     # - "--allowlisted_container_names=srscu0,srscu1,srscu2,srscu3,srsdu0,srsdu1,srsdu2,srsdu3"
+  #   depends_on:
+  #   - redis
+  #   networks:
+  #     oran-intel:
+  #       ipv4_address: 10.24.0.2
+
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+    - 6379:6379
+    networks:
+      oran-intel:
+        ipv4_address: 10.24.0.1
+
 
 volumes:
   gnb-storage:
   grafana-storage:
   influxdb-storage:
+  prometheus-storage:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./setup/prometheus/
+      o: bind
+
 
 networks:
   oran-intel:

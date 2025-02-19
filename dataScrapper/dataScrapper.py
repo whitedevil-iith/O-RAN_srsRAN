@@ -16,9 +16,9 @@ bucket = "srsran"
 
 # Configuration
 PROMETHEUS_URL = "http://localhost:9090"
-INPUT_FILE = "allPromQuery.txt"
-OUTPUT_FILE = "/home/intel/workspace/srsRAN_Disaggregated_7.2x_split-main/DATASET/prometheus_combined.csv"
-EXTRA_DATA_FILE = "/home/intel/workspace/srsRAN_Disaggregated_7.2x_split-main/stress/file_data.csv"
+INPUT_FILE = "dataScrapper/allPromQuery.txt"
+OUTPUT_FILE = "dataScrapper/prometheus_combined.csv"
+EXTRA_DATA_FILE = "stresser/file_data.csv"
 NUM_WORKERS = 20
 BATCH_SIZE = 20
 TIMEOUT = 10
@@ -90,6 +90,7 @@ async def fetch_influx_data() -> pd.DataFrame:
         records = await query_api.query_stream(query)
         data = []
         async for record in records:
+            print(record)
             data.append({
                 "key": f"{record['pci']}{record['rnti']}{record['_field']}",
                 "average": float(record['_value'])
@@ -124,13 +125,13 @@ async def main():
             start_time = time.time()
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
             all_results = {}
-
+                        
             # Process Prometheus queries
             for i in range(0, len(queries), BATCH_SIZE):
                 batch = queries[i:i + BATCH_SIZE]
                 batch_results = await process_batch(client, batch)
                 all_results.update(batch_results)
-
+            
             # Fetch InfluxDB data (one row only)
             influxDF = await fetch_influx_data()
             if not influxDF.empty:

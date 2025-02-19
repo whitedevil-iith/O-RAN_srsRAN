@@ -75,7 +75,7 @@ def stop_ping(container_id, pid):
 
 def get_docker_ids():
     try:
-        cmd = "docker ps --filter 'name=^/ue' --format '{{.ID}}'"
+        cmd = "docker ps --filter 'name=^/srsue' --format '{{.ID}}'"
         result = subprocess.check_output(cmd, shell=True, text=True)
         return result.strip().split('\n') if result.strip() else []
     except subprocess.CalledProcessError:

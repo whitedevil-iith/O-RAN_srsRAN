@@ -44,7 +44,7 @@ main() {
         fi
         if [[ "$mode" == "all" || "$mode" == "run" ]]; then
             DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-                libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev libzmq3-dev iproute2 libboost-all-dev libboost-program-options-dev
+                libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev libzmq3-dev iproute2 libboost-all-dev libboost-program-options-dev stress-ng
         fi
         if [[ "$mode" == "all" || "$mode" == "extra" ]]; then
             DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \

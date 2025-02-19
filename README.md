@@ -95,6 +95,11 @@ git clone https://github.com/srsran/oran-sc-ric.git
 cd ../
 ```
 
+### Step 4: Python dependencies
+```bash
+pip3 install aiohttp influxdb_client aiocsv
+```
+
 ## Running the Setup
 
 ### Terminal 1: Prepare and Start RIC from root directory
@@ -109,14 +114,30 @@ cp -f setup/srsRAN_Project/install_dependencies.sh RAN/srsRAN_Project/docker/scr
 ```
 Then, start RIC:
 ```bash
+# Run from O-RAN_srsRAN (Project root directory) after inside screen with name RIC
+
 cd RIC/oran-sc-ric
 docker compose up
 ```
 
 ### Terminal 2: Start srsRAN from root directory
 ```bash
+# Run from O-RAN_srsRAN (Project root directory) after inside screen with name RAN
+
 docker compose up
 ```
+
+### Terminal 3: Start monitoring docker containers tools like Prometheus, Cadvisor, Node-exporter
+```bash
+# Run from O-RAN_srsRAN (Project root directory)
+
+docker pull prom/prometheus:latest && docker run -d --name=prometheus --network=oran-intel -p 9090:9090 -v=$PWD/setup/prometheus:/prometheus-data prom/prometheus:latest --config.file=/prometheus-data/prometheus.yml
+
+docker pull gcr.io/cadvisor/cadvisor:latest && docker run --name=cadvisor --network=oran-intel --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true gcr.io/cadvisor/cadvisor:latest
+
+docker run -d --name=node-exporter --network=oran-intel -p 9100:9100 prom/node-exporter:latest
+```
+
 
 This setup ensures that all required components for RIC and srsRAN are properly installed and running.
 
