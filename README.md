@@ -111,6 +111,9 @@ cp -f setup/oran-sc-ric/docker-compose.yml RIC/oran-sc-ric/docker-compose.yml
 cp -f setup/srsRAN_Project/Dockerfile RAN/srsRAN_Project/docker/Dockerfile
 cp -f setup/srsRAN_Project/install_dependencies.sh RAN/srsRAN_Project/docker/scripts/install_dependencies.sh
 
+# Copy srsRAN_Project files which creates RAN Faults
+
+cp -f setup/srsRAN_Project/cu.cpp RAN/srsRAN_Project/apps/cu/cu.cpp
 ```
 Then, start RIC:
 ```bash
