@@ -39,6 +39,7 @@ RAN/srsRAN_Project
 RAN/srsRAN_Project.tar.gz
 setup/prometheus-data
 !RIC
+!setup/srsRAN_Project/cu.cpp
 
 dataScrapper/intermediateFileGenerator/Cadvisor.txt
 dataScrapper/intermediateFileGenerator/tmp.txt
