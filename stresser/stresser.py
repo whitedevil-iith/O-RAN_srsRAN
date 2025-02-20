@@ -107,7 +107,7 @@ def injectStress(container_id, typeOfStress, d, percentageOfStress, percentageOf
     # with lock:
         # file[container_id] = typeOfStress
 
-    if typeOfStress == 0 (percentageOfStress==0 and percentageOfStressEnd==0):
+    if (typeOfStress == 0 or (percentageOfStress==0 and percentageOfStressEnd==0)):
         # print(f"No stress applied to container {container_id} for {d}.")
         with lock:
             file[get_container_name(container_id)] = [0,0]
