@@ -45,3 +45,4 @@ dataScrapper/intermediateFileGenerator/tmp.txt
 dataScrapper/Node.txt
 dataScrapper/promCadvisor.txt
 stresser/file_data.csv
+!stresser/file_data.csv

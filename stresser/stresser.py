@@ -69,14 +69,14 @@ def save_to_file():
 
 
 
-def ensure_stress_ng_installed(container_id):
-    """Ensure that stress-ng is installed in the container."""
-    try:
-        install_cmd = f"docker exec -it {container_id} bash -c 'apt update && apt install -y stress-ng'"
-        print(f"Installing stress-ng on container {container_id}: {install_cmd}")
-        os.system(install_cmd)
-    except Exception as e:
-        print(f"Error installing stress-ng on container {container_id}: {e}")
+# def ensure_stress_ng_installed(container_id):
+#     """Ensure that stress-ng is installed in the container."""
+#     try:
+#         install_cmd = f"docker exec -it {container_id} bash -c 'apt update && apt install -y stress-ng'"
+#         print(f"Installing stress-ng on container {container_id}: {install_cmd}")
+#         os.system(install_cmd)
+#     except Exception as e:
+#         print(f"Error installing stress-ng on container {container_id}: {e}")
 
 def get_container_name(container_id):
     # Run the docker inspect command to get the container details in JSON format
@@ -107,11 +107,11 @@ def injectStress(container_id, typeOfStress, d, percentageOfStress, percentageOf
     # with lock:
         # file[container_id] = typeOfStress
 
-    if typeOfStress == 0:
-        print(f"No stress applied to container {container_id}.")
-        time.sleep(d)
+    if typeOfStress == 0 (percentageOfStress==0 and percentageOfStressEnd==0):
+        print(f"No stress applied to container {container_id} for {d}.")
         with lock:
             file[get_container_name(container_id)] = [0,0]
+        time.sleep(d)
         return
 
     try:
@@ -234,7 +234,7 @@ def main():
 
     while sum_duration <= max_duration:
         duration = int(np.random.exponential(scale=15) + 1)
-        duration = min(max(duration, 300), 1800)
+        duration = min(max(duration, 120), 900)
         sum_duration += duration
 
         threads = []
@@ -248,12 +248,15 @@ def main():
             if is_stress == 0:
                 percentage_of_stress_start = 0
                 percentage_of_stress_end = 0
-            elif type_of_stress == 1 or type_of_stress == 2:
+            elif type_of_stress == 1:
                 percentage_of_stress_start = np.random.randint(40, 91)
                 percentage_of_stress_end = np.random.randint(percentage_of_stress_start, 101)
+            elif type_of_stress == 2:
+                percentage_of_stress_start = np.random.randint(25, 36)
+                percentage_of_stress_end = np.random.randint(percentage_of_stress_start, 61)
             elif is_stress==1 and type_of_stress == 3:
-                percentage_of_stress_start = np.random.randint(1, 9)
-                percentage_of_stress_end = np.random.randint(percentage_of_stress_start, 11)
+                percentage_of_stress_start = np.random.randint(1, 3)
+                percentage_of_stress_end = np.random.randint(percentage_of_stress_start, 6)
 
             t = threading.Thread(
                 target=injectStress,

@@ -91,9 +91,14 @@ async def fetch_influx_data() -> pd.DataFrame:
         data = []
         async for record in records:
             print(record)
+            try:
+                average = float(record['_value'])
+            except ValueError:
+                average = 0.0  # Set to 0 if there's an error converting to float
+            
             data.append({
                 "key": f"{record['pci']}{record['rnti']}{record['_field']}",
-                "average": float(record['_value'])
+                "average": average
             })
         return pd.DataFrame(data)
 
