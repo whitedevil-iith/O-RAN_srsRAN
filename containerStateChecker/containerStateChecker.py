@@ -7,15 +7,18 @@ import subprocess
 
 # Define the screen command to reattach to the 'RAN' session and send commands
 commands = [
-    "screen -r OTHERS -X 'ps aux | grep 'stresser.py' | awk '{print $2}' | xargs kill && python3 stresser/stresser.py &\n'",
-    "screen -r OTHERS -X 'ps aux | grep 'trafficGenerator.py' | awk '{print $2}' | xargs kill && python3 trafficGenerator/trafficGenerator.py &\n'",
-    "screen -r OTHERS -X 'ps aux | grep 'dataScrapper.py' | awk '{print $2}' | xargs kill && python3 dataScrapper/dataScrapper.py &\n'",
+    "screen -r OTHERS -X 'ps aux | grep 'stresser.py' | awk '{print $2}' | xargs kill\n'",
+    "screen -r OTHERS -X 'ps aux | grep 'trafficGenerator.py' | awk '{print $2}' | xargs kill\n'",
+    "screen -r OTHERS -X 'ps aux | grep 'dataScrapper.py' | awk '{print $2}' | xargs kill\n'",
     "screen -r RAN -X stuff 'docker compose down\n'",  # Run docker compose down RAN
     "screen -r RAN -X stuff 'docker compose up\n'",     # Run docker compose up RAN
     "screen -r RIC -X stuff 'docker compose down\n'",  # Run docker compose down RIC
     "screen -r RIC -X stuff 'docker compose up\n'",     # Run docker compose up RIC
     "screen -r MON -X stuff 'docker rm -f prometheus cadvisor node-exporter\n'",
-    "screen -r MON -X stuff 'docker pull prom/prometheus:latest && docker run -d --name=prometheus --network=oran-intel -p 9090:9090 -v=$PWD/setup/prometheus:/prometheus-data prom/prometheus:latest --config.file=/prometheus-data/prometheus.yml && docker pull gcr.io/cadvisor/cadvisor:latest && docker run --name=cadvisor --network=oran-intel --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true gcr.io/cadvisor/cadvisor:latest && docker run -d --name=node-exporter --network=oran-intel -p 9100:9100 prom/node-exporter:latest\n'"
+    "screen -r MON -X stuff 'docker pull prom/prometheus:latest && docker run -d --name=prometheus --network=oran-intel -p 9090:9090 -v=$PWD/setup/prometheus:/prometheus-data prom/prometheus:latest --config.file=/prometheus-data/prometheus.yml && docker pull gcr.io/cadvisor/cadvisor:latest && docker run --name=cadvisor --network=oran-intel --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true gcr.io/cadvisor/cadvisor:latest && docker run -d --name=node-exporter --network=oran-intel -p 9100:9100 prom/node-exporter:latest\n'",
+    "screen -r OTHERS -X 'python3 stresser/stresser.py &\n'",
+    "screen -r OTHERS -X 'python3 trafficGenerator/trafficGenerator.py &\n'",
+    "screen -r OTHERS -X 'python3 dataScrapper/dataScrapper.py &\n'",
 ]
     
 def monitor_containers():
