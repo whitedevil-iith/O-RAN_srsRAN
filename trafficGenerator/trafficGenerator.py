@@ -69,7 +69,7 @@ def stop_ping(container_id, pid):
     try:
         cmd = f"docker exec {container_id} bash -c 'kill -9 {pid}'"
         subprocess.run(cmd, shell=True, check=True)
-        print(f"Stopped ping in container {container_id} (PID: {pid})")
+        # print(f"Stopped ping in container {container_id} (PID: {pid})")
     except subprocess.CalledProcessError:
         print(f"Error stopping ping in container {container_id}")
 
@@ -88,7 +88,7 @@ def setup_iperf_server(container_id):
             f"docker exec {container_id} bash -c 'iperf3 -s > /dev/null 2>&1 & echo $!'"
         )
         pid = subprocess.check_output(cmd, shell=True, text=True).strip()
-        print(f"iperf3 server started in container {container_id} with PID {pid}")
+        # print(f"iperf3 server started in container {container_id} with PID {pid}")
         return pid
     except subprocess.CalledProcessError as e:
         print(f"Error starting iperf3 server in container {container_id}: {e}")
@@ -100,7 +100,7 @@ def start_iperf_client(container_id, target_ip):
             f"docker exec {container_id} bash -c 'iperf3 -c {target_ip} -t 0 > /dev/null 2>&1 & echo $!'"
         )
         pid = subprocess.check_output(cmd, shell=True, text=True).strip()
-        print(f"iperf3 client started in container {container_id} targeting {target_ip} with PID {pid}")
+        # print(f"iperf3 client started in container {container_id} targeting {target_ip} with PID {pid}")
         return pid
     except subprocess.CalledProcessError as e:
         print(f"Error starting iperf3 client in container {container_id}: {e}")
@@ -110,13 +110,13 @@ def stop_process(container_id, pid):
     try:
         cmd = f"docker exec {container_id} bash -c 'kill -9 {pid}'"
         subprocess.run(cmd, shell=True, check=True)
-        print(f"Process {pid} stopped in container {container_id}")
+        # print(f"Process {pid} stopped in container {container_id}")
     except subprocess.CalledProcessError as e:
         print(f"Error stopping process {pid} in container {container_id}: {e}")
 
 def cleanup(signum=None, frame=None):
     """Clean up all running processes."""
-    print("\nCleaning up...")
+    # print("\nCleaning up...")
     if iperf_server_pid:
         stop_process(open5gs_container_id, iperf_server_pid)
 
@@ -159,15 +159,15 @@ def main():
         temp_size = current_distribution * 1_000_000_000
         total_ping_size = int(temp_size // 3600)
 
-        print(f"Half Hour: {hour}")
-        print(f"Current Distribution: {current_distribution}")
-        print(f"Total Ping Size: {total_ping_size} bytes")
+        # print(f"Half Hour: {hour}")
+        # print(f"Current Distribution: {current_distribution}")
+        # print(f"Total Ping Size: {total_ping_size} bytes")
 
         num_containers = len(docker_ids)
         sizes = generate_random_sizes(total_ping_size, num_containers)
 
         start_time = time.time()
-        end_time = start_time + 1800
+        end_time = start_time + 3600
 
         while time.time() < end_time:
             ping_pids = {}

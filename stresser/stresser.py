@@ -108,7 +108,7 @@ def injectStress(container_id, typeOfStress, d, percentageOfStress, percentageOf
         # file[container_id] = typeOfStress
 
     if typeOfStress == 0 (percentageOfStress==0 and percentageOfStressEnd==0):
-        print(f"No stress applied to container {container_id} for {d}.")
+        # print(f"No stress applied to container {container_id} for {d}.")
         with lock:
             file[get_container_name(container_id)] = [0,0]
         time.sleep(d)
@@ -128,7 +128,7 @@ def injectStress(container_id, typeOfStress, d, percentageOfStress, percentageOf
                 with lock:
                     file[get_container_name(container_id)] = [typeOfStress, step_stress]
                 stress_cmd = f"docker exec -it {container_id} bash -c 'stress-ng --cpu {cpu_cores} --cpu-load {step_stress} --timeout {step_duration}s'"
-                print(f"Applying CPU stress on container {container_id}: {stress_cmd}")
+                # print(f"Applying CPU stress on container {container_id}: {stress_cmd}")
                 proc = subprocess.Popen(stress_cmd, shell=True)
                 with lock:
                     stress_pids.append(proc.pid)
@@ -147,7 +147,7 @@ def injectStress(container_id, typeOfStress, d, percentageOfStress, percentageOf
                 with lock:
                     file[get_container_name(container_id)] = [typeOfStress, step_stress]
                 stress_cmd = f"docker exec -it {container_id} bash -c 'stress-ng --vm 1 --vm-bytes {step_stress}% --timeout {step_duration}s'"
-                print(f"Applying Memory stress on container {container_id}: {stress_cmd}")
+                # print(f"Applying Memory stress on container {container_id}: {stress_cmd}")
                 proc = subprocess.Popen(stress_cmd, shell=True)
                 with lock:
                     stress_pids.append(proc.pid)
@@ -168,7 +168,7 @@ def injectStress(container_id, typeOfStress, d, percentageOfStress, percentageOf
 
                 try:
                     tc_cmd = f"docker exec -it {container_id} bash -c 'tc qdisc add dev eth0 root netem loss {step_stress}%'"
-                    print(f"Applying Packet Loss on container {container_id}: {tc_cmd}")
+                    # print(f"Applying Packet Loss on container {container_id}: {tc_cmd}")
                     proc = subprocess.Popen(tc_cmd, shell=True)
                 except Exception as e:
                     print(e)
@@ -222,7 +222,7 @@ def main():
 
     cmd = "docker ps --filter 'name=^srscu' --filter 'name=^srsdu' --format '{{.ID}}'"
     container_ids = subprocess.check_output(cmd, shell=True).decode().splitlines()
-    print(f"Fetched container IDs: {container_ids}")
+    # print(f"Fetched container IDs: {container_ids}")
     packetLoss_Containers = container_ids
     # for container_id in container_ids:
     #     ensure_stress_ng_installed(container_id)
@@ -238,8 +238,8 @@ def main():
         sum_duration += duration
 
         threads = []
-        # type_probs = [1/2,1/6,1/6,1/6]
-        type_probs = [1,0,0,0]
+        type_probs = [0.25, 0.25, 0.25, 0.25]
+        # type_probs = [1,0,0,0]
         percentage_of_stress_start=0
         percentage_of_stress_end=0
         type_of_stress = np.random.choice([0, 1, 2, 3], p=type_probs)

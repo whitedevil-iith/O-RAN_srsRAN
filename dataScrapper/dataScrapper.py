@@ -90,7 +90,6 @@ async def fetch_influx_data() -> pd.DataFrame:
         records = await query_api.query_stream(query)
         data = []
         async for record in records:
-            print(record)
             try:
                 average = float(record['_value'])
             except ValueError:
@@ -164,7 +163,7 @@ async def main():
                 writer.writerow(combined_data)
 
             elapsed = time.time() - start_time
-            logging.info(f"Processed {len(queries)} queries in {elapsed:.2f}s")
+            # logging.info(f"Processed {len(queries)} queries in {elapsed:.2f}s")
             await asyncio.sleep(max(0, FETCH_INTERVAL - elapsed))
 
 
