@@ -97,7 +97,7 @@ cd ../
 
 ### Step 4: Python dependencies
 ```bash
-pip3 install aiohttp influxdb_client aiocsv
+pip3 install aiohttp influxdb_client aiocsv psutil
 ```
 
 ## Running the Setup
@@ -115,7 +115,7 @@ cp -f setup/srsRAN_Project/install_dependencies.sh RAN/srsRAN_Project/docker/scr
 
 cp -f setup/srsRAN_Project/cu.cpp RAN/srsRAN_Project/apps/cu/cu.cpp
 ```
-Then, start RIC:
+<!-- Then, start RIC:
 ```bash
 # Run from O-RAN_srsRAN (Project root directory) after inside screen with name RIC
 
@@ -139,6 +139,11 @@ docker pull prom/prometheus:latest && docker run -d --name=prometheus --network=
 docker pull gcr.io/cadvisor/cadvisor:latest && docker run --name=cadvisor --network=oran-intel --volume=/:/rootfs:ro --volume=/var/run:/var/run:rw --volume=/sys:/sys:ro --volume=/var/lib/docker/:/var/lib/docker:ro --publish=8080:8080 --detach=true gcr.io/cadvisor/cadvisor:latest
 
 docker run -d --name=node-exporter --network=oran-intel -p 9100:9100 prom/node-exporter:latest
+``` -->
+
+Then, start containerStateChecker/monitor.py
+```bash
+nohup python3 containerStateChecker/monitor.py > /dev/null 2>&1 &
 ```
 
 

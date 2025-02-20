@@ -228,6 +228,7 @@ services:
     # stdin_open: true
     # tty: true
     image: srsue:split_8_zmq
+    user: root
     build:
       context: UE
       dockerfile: Dockerfile
@@ -258,6 +259,7 @@ services:
   ue1:
     container_name: srsue1
     image: srsue:split_8_zmq
+    user: root
     devices:
       - /dev/net/tun
     cap_add:
@@ -283,6 +285,7 @@ services:
   ue2:
     container_name: srsue2
     image: srsue:split_8_zmq
+    user: root
     devices:
       - /dev/net/tun
     cap_add:
@@ -308,6 +311,7 @@ services:
   ue3:
     container_name: srsue3
     image: srsue:split_8_zmq
+    user: root
     devices:
       - /dev/net/tun
     cap_add:
