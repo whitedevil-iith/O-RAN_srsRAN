@@ -71,6 +71,14 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 2G
+        reservations:
+          cpus: "3.0"
+          memory: 2G
 
   cu1:
     container_name: srscu1
@@ -93,6 +101,14 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 2G
+        reservations:
+          cpus: "3.0"
+          memory: 2G
   
   cu2:
     container_name: srscu2
@@ -115,7 +131,15 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-  
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 2G
+        reservations:
+          cpus: "3.0"
+          memory: 2G
+
   cu3:
     container_name: srscu3
     image: srsran:split_8_zmq
@@ -137,6 +161,14 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 2G
+        reservations:
+          cpus: "3.0"
+          memory: 2G
   
   
   du0:
@@ -159,6 +191,14 @@ services:
       - cu0
       - 5gc
     command: srsdu -c /config/du.conf
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 3G
+        reservations:
+          cpus: "3.0"
+          memory: 3G
 
   du1:
     container_name: srsdu1
@@ -180,6 +220,14 @@ services:
       - cu1
       - 5gc
     command: srsdu -c /config/du.conf
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 3G
+        reservations:
+          cpus: "3.0"
+          memory: 3G
   
   du2:
     container_name: srsdu2
@@ -201,6 +249,14 @@ services:
       - cu2
       - 5gc
     command: srsdu -c /config/du.conf
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 3G
+        reservations:
+          cpus: "3.0"
+          memory: 3G
   
   du3:
     container_name: srsdu3
@@ -222,6 +278,14 @@ services:
       - cu3
       - 5gc
     command: srsdu -c /config/du.conf
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 3G
+        reservations:
+          cpus: "3.0"
+          memory: 3G
 
   ue0:
     container_name: srsue0
