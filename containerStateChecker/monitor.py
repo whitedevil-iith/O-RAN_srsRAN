@@ -31,9 +31,8 @@ def stop_containers():
 # Start processes
 def start_processes():
     print("Starting Python scripts...")
-    subprocess.Popen(["python3", "stresser/stresser.py"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.Popen(["python3", "trafficGenerator/trafficGenerator.py"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.Popen(["python3", "dataScrapper/dataScrapper.py"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for script in ["stresser/stresser.py", "trafficGenerator/trafficGenerator.py", "dataScrapper/dataScrapper.py"]:
+        subprocess.Popen(["python3", script], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 # Restart Docker services
 def restart_services():
@@ -81,32 +80,39 @@ def check_containers():
         try:
             running_containers = subprocess.check_output(["docker", "ps", "--format", "{{.Names}}"], text=True).splitlines()
 
+            # Check if expected containers are running
             for container_name in containers_to_check:
                 if container_name not in running_containers:
-                    print(f"{timestamp} WARNING: Container '{container_name}' is not running. Restarting services...")
-                    restart_services()
-                    kill_processes()
-                    start_processes()
+                    print(f"{timestamp} WARNING: Container '{container_name}' is not running. Restarting it...")
+                    subprocess.run(f"docker start {container_name}", shell=True)
+                    
+                    # If restarting doesn't work, restart the entire service
+                    if container_name not in subprocess.check_output(["docker", "ps", "--format", "{{.Names}}"], text=True):
+                        print(f"{timestamp} ERROR: Failed to restart '{container_name}'. Restarting all services...")
+                        kill_processes()
+                        restart_services()
+                        start_processes()
 
+            # Check container logs for errors
             for container_name in containers_to_check_logs:
                 if container_name in running_containers:
                     try:
                         logs = subprocess.check_output(["docker", "logs", "--tail", "50", container_name], text=True)
                         if log_keyword in logs:
                             print(f"{timestamp} WARNING: Found '{log_keyword}' in logs of container '{container_name}'. Restarting services...")
-                            restart_services()
                             kill_processes()
+                            restart_services()
                             start_processes()
                     except subprocess.CalledProcessError:
                         print(f"{timestamp} WARNING: Failed to retrieve logs for container '{container_name}'. Restarting services...")
-                        restart_services()
                         kill_processes()
+                        restart_services()
                         start_processes()
 
         except Exception as e:
             print(f"{timestamp} ERROR: {e}. Restarting services...")
-            restart_services()
             kill_processes()
+            restart_services()
             start_processes()
         
         time.sleep(3)
