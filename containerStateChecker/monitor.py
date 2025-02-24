@@ -6,7 +6,8 @@ import sys
 from datetime import datetime
 
 # Define processes and containers to manage
-processes_to_monitor = ["stresser/stresser.py", "trafficGenerator/trafficGenerator.py", "dataScrapper/dataScrapper.py"]
+# processes_to_monitor = ["stresser/stresser.py", "trafficGenerator/trafficGenerator.py"]
+processes_to_monitor = ["stresser/final_stresser_&_data_Scrapper.py", "trafficGenerator/trafficGenerator.py"]
 containers_to_check = ["srscu0", "srscu1", "srscu2", "srscu3", "srsdu3", "srsdu2", "srsdu1", "srsdu0"]
 containers_to_check_logs = ["srsue0", "srsue1", "srsue2", "srsue3"]
 log_keyword = "Received RRC Release"

@@ -32,40 +32,62 @@ for cid in container_ids:
     file[cid] = [0, 0]
 
 
+# def save_to_file():
+#     """Function to save the 'file' dictionary to a CSV file every 45 seconds."""
+#     while True:
+#         with lock:
+#             # Open the CSV file in write mode (this will overwrite the file)
+#             with open('stresser/file_data.csv', 'w', newline='') as csvfile:
+#                 # Define the fieldnames (dynamic columns based on container IDs)
+#                 fieldnames = []
+
+#                 # Dynamically create fieldnames for each container
+#                 for cid in file.keys():
+#                     fieldnames.append(f"{cid}_stressType")
+#                     fieldnames.append(f"{cid}_stepStress")
+                
+#                 # Create the CSV writer
+#                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                
+#                 # Write the header once (field names for each container)
+#                 writer.writeheader()
+                
+#                 # Create a row with the current data
+#                 row = {}
+#                 for cid, (stress_type, step_stress) in file.items():
+#                     row[f"{cid}_stressType"] = stress_type
+#                     row[f"{cid}_stepStress"] = step_stress
+                
+#                 # Write the row into the CSV file
+#                 writer.writerow(row)
+#                 csvfile.flush()  # Ensure data is written immediately
+            
+#             # print("File saved to CSV.")
+
+#         # Save every 45 seconds
+#         time.sleep(45)
+
 def save_to_file():
-    """Function to save the 'file' dictionary to a CSV file every 45 seconds."""
+    """Save the 'file' dictionary to a CSV file every 45 seconds."""
     while True:
         with lock:
-            # Open the CSV file in write mode (this will overwrite the file)
-            with open('stresser/file_data.csv', 'w', newline='') as csvfile:
-                # Define the fieldnames (dynamic columns based on container IDs)
-                fieldnames = []
-
-                # Dynamically create fieldnames for each container
-                for cid in file.keys():
-                    fieldnames.append(f"{cid}_stressType")
-                    fieldnames.append(f"{cid}_stepStress")
-                
-                # Create the CSV writer
+            # Open CSV in append mode
+            with open('stresser/file_data.csv', 'a', newline='') as csvfile:
+                fieldnames = [f"{cid}_stressType" for cid in file.keys()] + [f"{cid}_stepStress" for cid in file.keys()]
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-                
-                # Write the header once (field names for each container)
-                writer.writeheader()
-                
-                # Create a row with the current data
+
+                # Write header only if file is empty
+                if csvfile.tell() == 0:
+                    writer.writeheader()
+
+                # Write current state of stresses
                 row = {}
                 for cid, (stress_type, step_stress) in file.items():
                     row[f"{cid}_stressType"] = stress_type
                     row[f"{cid}_stepStress"] = step_stress
-                
-                # Write the row into the CSV file
+
                 writer.writerow(row)
-            
-            # print("File saved to CSV.")
-
-        # Save every 45 seconds
         time.sleep(45)
-
 
 
 
@@ -106,7 +128,8 @@ def injectStress(container_id, typeOfStress, d, percentageOfStress, percentageOf
     global stress_pids
     # with lock:
         # file[container_id] = typeOfStress
-
+    
+    
     if (typeOfStress == 0 or (percentageOfStress==0 and percentageOfStressEnd==0)):
         # print(f"No stress applied to container {container_id} for {d}.")
         with lock:
@@ -185,6 +208,8 @@ def injectStress(container_id, typeOfStress, d, percentageOfStress, percentageOf
                 current_stress = step_stress
             os.system("python3 pl_deleter.py")
 
+        print(f'File is {file} stress duration is {d} and sttress type is {typeOfStress}')
+
     except subprocess.CalledProcessError as e:
         print(f"Subprocess error applying stress to container {container_id}: {e}")
     except Exception as e:
@@ -233,8 +258,9 @@ def main():
     save_thread.start()
 
     while sum_duration <= max_duration:
-        duration = int(np.random.exponential(scale=15) + 1)
-        duration = min(max(duration, 120), 900)
+        duration = int(np.random.exponential(scale=20) + 1)
+        duration = min(max(duration, 120), 300)
+        duration = min(max(duration, 10), 30)
         sum_duration += duration
 
         threads = []
