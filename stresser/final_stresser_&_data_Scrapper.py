@@ -135,6 +135,27 @@ def get_container_name(container_id: str) -> Optional[str]:
         print(f"Error while parsing JSON output: {e}")
         return None
 
+def cleanup_stress():
+    """Stop all stress processes and cleanup inside all containers."""
+    global stress_pids
+    print("\nCleaning up stress processes...")
+    with stress_lock:
+        # Terminate host-side docker exec processes
+        for pid in stress_pids:
+            try:
+                os.kill(pid, signal.SIGTERM)
+                print(f"Terminated process with PID {pid}")
+            except OSError as e:
+                print(f"Error terminating process with PID {pid}: {e}")
+        stress_pids.clear()
+
+        # Kill any remaining stress-ng processes inside containers
+        for cname in global_stress_data.keys():
+            cleanup_cmd = f"docker exec {cname} pkill -f stress-ng"
+            subprocess.run(cleanup_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    sys.exit(0)
+
+
 
 def injectStress(container_id: str, typeOfStress: int, d: int, percentageOfStress: int, percentageOfStressEnd: int):
     """
@@ -146,6 +167,10 @@ def injectStress(container_id: str, typeOfStress: int, d: int, percentageOfStres
     if not cname:
         print(f"Could not retrieve container name for ID: {container_id}")
         return
+    
+    # Cleanup any existing stress-ng processes inside the container
+    cleanup_cmd = f"docker exec {container_id} pkill -f stress-ng"
+    subprocess.run(cleanup_cmd, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     # with stress_lock:
     #     global_stress_data[cname] = [typeOfStress, percentageOfStress]
