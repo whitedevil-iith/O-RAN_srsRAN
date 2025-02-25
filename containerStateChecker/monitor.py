@@ -95,7 +95,10 @@ def check_system_health():
             for container_name in containers_to_check:
                 if container_name not in running_containers:
                     print(f"{timestamp} WARNING: Container '{container_name}' is not running. Restarting it...")
-                    subprocess.run(f"docker start {container_name}", shell=True)
+                    # subprocess.run(f"docker start {container_name}", shell=True)
+                    kill_processes()
+                    restart_services()
+                    start_processes()
 
             # Check container logs for errors
             for container_name in containers_to_check_logs:
