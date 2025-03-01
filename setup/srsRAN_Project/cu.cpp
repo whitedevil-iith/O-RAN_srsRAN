@@ -207,6 +207,35 @@ void start_server() {
 
 /*L S Yaswanth Kumar*/
 
+
+
+
+/*L S Yaswanth Kumar*/
+#include <iostream>
+#include <fcntl.h>      // O_* flags
+#include <sys/mman.h>   // shm_open, mmap
+#include <unistd.h>     // ftruncate
+#include <cstring>      // strcpy, memcpy
+
+#define SHM_NAME "/my_shared_memory"
+#define SHM_SIZE 1024
+#define MAX_ENTRIES 5
+
+
+// Define a struct for key-value pair
+struct KeyValuePair {
+  char key[50];
+  char value[50];
+};
+
+// Define shared memory structure
+struct SharedDictionary {
+  int count;  // Number of key-value pairs
+  KeyValuePair entries[MAX_ENTRIES];
+};
+
+/*L S Yaswanth Kumar*/
+
 /// \file
 /// \brief Application of a Central Unit (CU) with combined CU control-plane (CU-CP) and CU user-plane (CU-UP).
 ///
@@ -306,6 +335,8 @@ static void autoderive_cu_up_parameters_after_parsing(o_cu_up_unit_config&     o
   o_cu_up_cfg.cu_up_cfg.upf_cfg.no_core = cu_cp_cfg.amf_config.no_core;
   o_cu_up_cfg.e2_cfg.pcaps.enabled = o_cu_up_cfg.e2_cfg.base_config.enable_unit_e2 && o_cu_up_cfg.e2_cfg.pcaps.enabled;
 }
+
+using namespace std;
 
 int main(int argc, char** argv)
 {
@@ -508,6 +539,43 @@ int main(int argc, char** argv)
   std::thread server_thread(start_server);
   server_thread.detach();  // Run independently
 
+  
+
+  /*L S Yaswanth Kumar*/
+
+
+
+  /*L S Yaswanth Kumar*/
+
+
+  // Create shared memory
+  int shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 2412);
+  
+  // Set shared memory size
+  if(ftruncate(shm_fd, SHM_SIZE))
+  {
+    cout<<"Successfully created Shared Memory for DMA";
+  }
+  
+  // Map shared memory
+  void* ptr = mmap(0, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+
+  // Cast to SharedDictionary struct
+  SharedDictionary* dict = static_cast<SharedDictionary*>(ptr);
+
+  // Add key-value pairs
+  dict->count = 3;  // Number of key-value pairs
+  strcpy(dict->entries[0].key, "Name");
+  strcpy(dict->entries[0].value, "Alice");
+
+  strcpy(dict->entries[1].key, "Age");
+  strcpy(dict->entries[1].value, "25");
+
+  strcpy(dict->entries[2].key, "Country");
+  strcpy(dict->entries[2].value, "India");
+
+  std::cout << "Writer: Dictionary written to shared memory!" << std::endl;
+
   /*L S Yaswanth Kumar*/
 
 
@@ -543,6 +611,15 @@ int main(int argc, char** argv)
       std::this_thread::sleep_for(std::chrono::milliseconds(250));
     }
   }
+
+  /*L S Yaswanth Kumar*/
+    
+  // Cleanup
+  munmap(ptr, SHM_SIZE);
+  close(shm_fd);
+  shm_unlink(SHM_NAME);
+  
+  /*L S Yaswanth Kumar*/
 
   // Stop O-CU-UP activity.
   o_cuup_unit.unit->get_power_controller().stop();
