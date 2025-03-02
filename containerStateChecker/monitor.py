@@ -8,7 +8,7 @@ import argparse  # Import argparse for command-line argument parsing
 
 # Set up argparse to handle command-line arguments
 parser = argparse.ArgumentParser(description="Start and monitor system with resource constraints.")
-parser.add_argument("--resource-constraint", type=str, required=False, help="Specify resource constraints for the system.")
+parser.add_argument("--resource-constraint", type=str, required=False, help="Specify resource constraints for the system.", default="no", choices=["yes", "no"])
 args = parser.parse_args()
 
 resource_constraint = args.resource_constraint
