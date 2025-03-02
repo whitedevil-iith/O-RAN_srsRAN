@@ -5,10 +5,10 @@ LOG_STRING=$2
 
 # Loop until the log string is found in the container's logs
 while true; do
-  if docker logs "$CONTAINER_NAME" 2>&1 | grep -q "$LOG_STRING"; then
+  if docker logs -f "$CONTAINER_NAME" 2>&1 | grep -q "$LOG_STRING"; then
     echo "Log message '$LOG_STRING' found in $CONTAINER_NAME logs. Proceeding..."
     break
   fi
-  echo "Waiting for log message '$LOG_STRING'...'$CONTAINER_NAME' "
-  sleep 1  # Wait for 2 seconds before checking again
+  echo "Waiting for log message '$LOG_STRING'... '$CONTAINER_NAME'"
+  sleep 1  # Wait before checking again
 done
