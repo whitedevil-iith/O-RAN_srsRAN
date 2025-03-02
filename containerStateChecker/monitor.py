@@ -12,6 +12,17 @@ containers_to_check = ["srscu0", "srscu1", "srscu2", "srscu3", "srsdu3", "srsdu2
 containers_to_check_logs = ["srsue0", "srsue1", "srsue2", "srsue3"]
 log_keyword = "Received RRC Release"
 
+def wait_for_log(container_name, log_string):
+    while True:
+        # Fetch logs and check for the presence of the log string
+        logs = subprocess.check_output(["docker", "logs", container_name], text=True)
+        if log_string in logs:
+            print(f"Log message '{log_string}' found in {container_name} logs. Proceeding...")
+            break
+        print(f"Waiting for log message '{log_string}' in container '{container_name}'...")
+        time.sleep(2)  # Wait before checking again
+
+
 # Kill all specified processes
 def kill_processes():
     for proc in psutil.process_iter(attrs=['pid', 'cmdline']):
@@ -63,25 +74,39 @@ def restart_services():
     subprocess.run(f"cd {pwd}/RIC/oran-sc-ric && docker compose up -d", shell=True)
     subprocess.run(f"cd {pwd} && docker compose -f docker-compose-cu++.yaml up -d", shell=True)
 
-    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu0', 'F1-C']).returncode == 0:
-        print("CU0 is up")
-    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu1', 'F1-C']).returncode == 0:
-        print("CU1 is up")
-    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu2', 'F1-C']).returncode == 0:
-        print("CU2 is up")
-    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu3', 'F1-C']).returncode == 0:
-        print("CU3 is up")
+    CU_Count = 0
+    DU_Count = 0
+
+    while(CU_Count<4):
+        wait_for_log('srscu0', 'F1-C')
+        CU_Count += 1
 
     subprocess.run(f"cd {pwd} && docker compose -f docker-compose-du.yaml up -d", shell=True)
     
-    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du0', '==== DU started ===']).returncode == 0:
-        print("DU0 is up")
-    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du1', '==== DU started ===']).returncode == 0:
-        print("DU1 is up")
-    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du2', '==== DU started ===']).returncode == 0:
-        print("DU2 is up")
-    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du3', '==== DU started ===']).returncode == 0:
-        print("DU3 is up")
+    while(DU_Count<4):
+        wait_for_log('srsdu0', '==== DU started ===')
+        DU_Count += 1
+    
+
+    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu0', 'F1-C']).returncode == 0:
+    #     print("CU0 is up")
+    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu1', 'F1-C']).returncode == 0:
+    #     print("CU1 is up")
+    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu2', 'F1-C']).returncode == 0:
+    #     print("CU2 is up")
+    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu3', 'F1-C']).returncode == 0:
+    #     print("CU3 is up")
+
+    # subprocess.run(f"cd {pwd} && docker compose -f docker-compose-du.yaml up -d", shell=True)
+    
+    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du0', '==== DU started ===']).returncode == 0:
+    #     print("DU0 is up")
+    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du1', '==== DU started ===']).returncode == 0:
+    #     print("DU1 is up")
+    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du2', '==== DU started ===']).returncode == 0:
+    #     print("DU2 is up")
+    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du3', '==== DU started ===']).returncode == 0:
+    #     print("DU3 is up")
 
     subprocess.run(f"cd {pwd} && docker compose -f docker-compose-ue++.yaml up -d", shell=True)
 
