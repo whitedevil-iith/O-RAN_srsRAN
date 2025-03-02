@@ -35,9 +35,9 @@ services:
     networks:
       oran-intel:
         ipv4_address: 10.53.1.250
-    depends_on:
-      - cu0
-      - 5gc
+    # depends_on:
+    #   - cu0
+    #   - 5gc
     command: srsdu -c /config/du.conf
     deploy:
       resources:
@@ -64,9 +64,9 @@ services:
     networks:
       oran-intel:
         ipv4_address: 10.53.1.150
-    depends_on:
-      - cu1
-      - 5gc
+    # depends_on:
+    #   - cu1
+    #   - 5gc
     command: srsdu -c /config/du.conf
     deploy:
       resources:
@@ -93,9 +93,9 @@ services:
     networks:
       oran-intel:
         ipv4_address: 10.53.1.81
-    depends_on:
-      - cu2
-      - 5gc
+    # depends_on:
+    #   - cu2
+    #   - 5gc
     command: srsdu -c /config/du.conf
     deploy:
       resources:
@@ -122,9 +122,9 @@ services:
     networks:
       oran-intel:
         ipv4_address: 10.53.1.91
-    depends_on:
-      - cu3
-      - 5gc
+    # depends_on:
+    #   - cu3
+    #   - 5gc
     command: srsdu -c /config/du.conf
     deploy:
       resources:
