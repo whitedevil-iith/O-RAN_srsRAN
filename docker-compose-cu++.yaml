@@ -79,7 +79,7 @@ services:
         reservations:
           cpus: "3.0"
           memory: 2G
-      cpuset: "0,1,2"
+    cpuset: "0,1,2"
 
   cu1:
     container_name: srscu1
@@ -110,7 +110,7 @@ services:
         reservations:
           cpus: "3.0"
           memory: 2G
-      cpuset: "3,4,5"
+    cpuset: "3,4,5"
   
   cu2:
     container_name: srscu2
@@ -141,7 +141,7 @@ services:
         reservations:
           cpus: "3.0"
           memory: 2G
-      cpuset: "6,7,8"
+    cpuset: "6,7,8"
 
   cu3:
     container_name: srscu3
@@ -172,7 +172,7 @@ services:
         reservations:
           cpus: "3.0"
           memory: 2G
-      cpuset: "9,10,11"
+    cpuset: "9,10,11"
 
 
 volumes:
