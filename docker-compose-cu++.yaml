@@ -53,8 +53,8 @@ services:
       dockerfile: docker/Dockerfile
       args:
         OS_VERSION: "22.04"
-    # stdin_open: true # docker run -i
-    # tty: true        # docker run -t
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     privileged: true
     cap_add:
       - SYS_NICE
@@ -84,8 +84,8 @@ services:
   cu1:
     container_name: srscu1
     image: srsran:split_8_zmq
-    # stdin_open: true # docker run -i
-    # tty: true        # docker run -t
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     privileged: true
     cap_add:
       - SYS_NICE
@@ -115,8 +115,8 @@ services:
   cu2:
     container_name: srscu2
     image: srsran:split_8_zmq
-    # stdin_open: true # docker run -i
-    # tty: true        # docker run -t
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     privileged: true
     cap_add:
       - SYS_NICE
@@ -146,8 +146,8 @@ services:
   cu3:
     container_name: srscu3
     image: srsran:split_8_zmq
-    # stdin_open: true # docker run -i
-    # tty: true        # docker run -t
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     privileged: true
     cap_add:
       - SYS_NICE
