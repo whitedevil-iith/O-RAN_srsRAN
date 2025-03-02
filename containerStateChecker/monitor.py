@@ -85,8 +85,6 @@ def restart_services():
     print("Restarting RIC and RAN...")
 
     if(resource_constraint=='yes'):
-        subprocess.run(f"chmod +x {pwd}/RAN/wait_for_log.sh", shell=True)
-
         subprocess.run(f"cd {pwd}/RIC/oran-sc-ric && docker compose up -d", shell=True)
         subprocess.run(f"cd {pwd} && docker compose -f docker-compose-cu++.yaml up -d", shell=True)
 
