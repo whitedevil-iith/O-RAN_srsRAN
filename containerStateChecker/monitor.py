@@ -78,13 +78,13 @@ def restart_services():
     DU_Count = 0
 
     while(CU_Count<4):
-        wait_for_log('srscu0', 'F1-C')
+        wait_for_log(f'srscu{CU_Count}', 'F1-C')
         CU_Count += 1
 
     subprocess.run(f"cd {pwd} && docker compose -f docker-compose-du.yaml up -d", shell=True)
     
     while(DU_Count<4):
-        wait_for_log('srsdu0', '==== DU started ===')
+        wait_for_log(f'srsdu{DU_Count}', '==== DU started ===')
         DU_Count += 1
     
 
