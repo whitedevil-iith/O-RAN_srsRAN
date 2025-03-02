@@ -38,10 +38,6 @@ services:
       - NET_ADMIN
     env_file:
       - .env
-    depends_on:
-      - 5gc
-      - cu0
-      - du0
     volumes:
       - ./UE/ue_zmq.conf:/configs/ue.conf
       - /dev/null:/tmp/ue.log
@@ -65,10 +61,6 @@ services:
       - NET_ADMIN
     env_file:
       - .env
-    depends_on:
-      - 5gc
-      - cu1
-      - du1
     volumes:
       - ./UE/ue_zmq_1.conf:/configs/ue.conf
       - /dev/null:/tmp/ue.log
@@ -92,10 +84,6 @@ services:
       - NET_ADMIN
     env_file:
       - .env
-    depends_on:
-      - 5gc
-      - cu2
-      - du2
     volumes:
       - ./UE/ue_zmq_2.conf:/configs/ue.conf
       - /dev/null:/tmp/ue.log
@@ -119,10 +107,6 @@ services:
       - NET_ADMIN
     env_file:
       - .env
-    depends_on:
-      - 5gc
-      - cu3
-      - du3
     volumes:
       - ./UE/ue_zmq_3.conf:/configs/ue.conf
       - /dev/null:/tmp/ue.log
