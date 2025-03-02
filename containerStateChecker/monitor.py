@@ -53,30 +53,37 @@ def start_processes():
 # Restart Docker services
 def restart_services():
     print("Restarting RIC and RAN...")
-    subprocess.run("cd /home/newsl/workspace/O-RAN_srsRAN/RIC/oran-sc-ric && docker compose up -d", shell=True)
-    subprocess.run("cd /home/newsl/workspace/O-RAN_srsRAN && docker compose -f docker-compose-cu++.yaml up -d", shell=True)
+
+    result = subprocess.run("pwd", capture_output=True, text=True)
+    pwd = result.stdout.strip()
+    print(f'Current working directory is {pwd}')
+
+    subprocess.run(f"chmod +x {pwd}/RAN/wait_for_log.sh", shell=True)
+
+    subprocess.run(f"cd {pwd}/RIC/oran-sc-ric && docker compose up -d", shell=True)
+    subprocess.run(f"cd {pwd} && docker compose -f docker-compose-cu++.yaml up -d", shell=True)
+
+    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu0', '==== CU started ===']).returncode == 0:
+            print("CU0 is up")
+    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu1', '==== CU started ===']).returncode == 0:
+            print("CU1 is up")
+    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu2', '==== CU started ===']).returncode == 0:
+            print("CU2 is up")
+    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu3', '==== CU started ===']).returncode == 0:
+            print("CU3 is up")
+
+    subprocess.run(f"cd {pwd} && docker compose -f docker-compose-du.yaml up -d", shell=True)
     
-    if(subprocess.run('/home/newsl/workspace/O-RAN_srsRAN/RAN/wait_for_log.sh cu0 "==== CU started ==="').returncode == 0):
-        print("CU0 is up")
-    if(subprocess.run('/home/newsl/workspace/O-RAN_srsRAN/RAN/wait_for_log.sh cu1 "==== CU started ==="').returncode == 0):
-        print("CU1 is up")
-    if(subprocess.run('/home/newsl/workspace/O-RAN_srsRAN/RAN/wait_for_log.sh cu2 "==== CU started ==="').returncode == 0):
-        print("CU2 is up")
-    if(subprocess.run('/home/newsl/workspace/O-RAN_srsRAN/RAN/wait_for_log.sh cu3 "==== CU started ==="').returncode == 0):
-        print("CU3 is up")
-    
-    subprocess.run("cd /home/newsl/workspace/O-RAN_srsRAN && docker compose -f docker-compose-du.yaml up -d", shell=True)
-    
-    if(subprocess.run('/home/newsl/workspace/O-RAN_srsRAN/RAN/wait_for_log.sh du0 "==== DU started ==="').returncode == 0):
+    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du0', '==== DU started ===']).returncode == 0:
         print("DU0 is up")
-    if(subprocess.run('/home/newsl/workspace/O-RAN_srsRAN/RAN/wait_for_log.sh du1 "==== DU started ==="').returncode == 0):
+    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du1', '==== DU started ===']).returncode == 0:
         print("DU1 is up")
-    if(subprocess.run('/home/newsl/workspace/O-RAN_srsRAN/RAN/wait_for_log.sh du2 "==== DU started ==="').returncode == 0):
+    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du2', '==== DU started ===']).returncode == 0:
         print("DU2 is up")
-    if(subprocess.run('/home/newsl/workspace/O-RAN_srsRAN/RAN/wait_for_log.sh du3 "==== DU started ==="').returncode == 0):
+    if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du3', '==== DU started ===']).returncode == 0:
         print("DU3 is up")
 
-    subprocess.run("cd /home/newsl/workspace/O-RAN_srsRAN && docker compose -f docker-compose-ue++.yaml up -d", shell=True)
+    subprocess.run(f"cd {pwd} && docker compose -f docker-compose-ue++.yaml up -d", shell=True)
 
 # Restart monitoring services
 def restart_monitoring():

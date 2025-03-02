@@ -9,6 +9,6 @@ while true; do
     echo "Log message '$LOG_STRING' found in $CONTAINER_NAME logs. Proceeding..."
     break
   fi
-  echo "Waiting for log message '$LOG_STRING'..."
+  echo "Waiting for log message '$LOG_STRING'...'$CONTAINER_NAME' "
   sleep 1  # Wait for 2 seconds before checking again
 done
