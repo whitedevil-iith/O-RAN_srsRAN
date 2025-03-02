@@ -257,7 +257,7 @@ services:
       - du0
     volumes:
       - ./UE/ue_zmq.conf:/configs/ue.conf
-      - /dev/null:/tmp
+      - /dev/null:/tmp/ue.log
     environment:
       - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
       - PING=${PING}
@@ -284,7 +284,7 @@ services:
       - du1
     volumes:
       - ./UE/ue_zmq_1.conf:/configs/ue.conf
-      - /dev/null:/tmp
+      - /dev/null:/tmp/ue.log
     environment:
       - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
       - PING=${PING}
@@ -311,7 +311,7 @@ services:
       - du2
     volumes:
       - ./UE/ue_zmq_2.conf:/configs/ue.conf
-      - /dev/null:/tmp
+      - /dev/null:/tmp/ue.log
     environment:
       - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
       - PING=${PING}
@@ -338,7 +338,7 @@ services:
       - du3
     volumes:
       - ./UE/ue_zmq_3.conf:/configs/ue.conf
-      - /dev/null:/tmp
+      - /dev/null:/tmp/ue.log
     environment:
       - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
       - PING=${PING}
