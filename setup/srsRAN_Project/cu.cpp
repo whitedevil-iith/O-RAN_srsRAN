@@ -535,9 +535,9 @@ int main(int argc, char** argv)
 
   /*L S Yaswanth Kumar*/
 
-  // Run server in background
-  std::thread server_thread(start_server);
-  server_thread.detach();  // Run independently
+  // // Run server in background
+  // std::thread server_thread(start_server);
+  // server_thread.detach();  // Run independently
 
   
 
