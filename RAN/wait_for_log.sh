@@ -10,5 +10,5 @@ while true; do
     break
   fi
   echo "Waiting for log message '$LOG_STRING'..."
-  sleep 2  # Wait for 2 seconds before checking again
+  sleep 1  # Wait for 2 seconds before checking again
 done
