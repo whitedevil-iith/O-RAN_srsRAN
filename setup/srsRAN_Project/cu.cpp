@@ -548,33 +548,33 @@ int main(int argc, char** argv)
   /*L S Yaswanth Kumar*/
 
 
-  // Create shared memory
-  int shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 2412);
+  // // Create shared memory
+  // int shm_fd = shm_open(SHM_NAME, O_CREAT | O_RDWR, 2412);
   
-  // Set shared memory size
-  if(ftruncate(shm_fd, SHM_SIZE))
-  {
-    cout<<"Successfully created Shared Memory for DMA";
-  }
+  // // Set shared memory size
+  // if(ftruncate(shm_fd, SHM_SIZE))
+  // {
+  //   cout<<"Successfully created Shared Memory for DMA";
+  // }
   
-  // Map shared memory
-  void* ptr = mmap(0, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+  // // Map shared memory
+  // void* ptr = mmap(0, SHM_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
 
-  // Cast to SharedDictionary struct
-  SharedDictionary* dict = static_cast<SharedDictionary*>(ptr);
+  // // Cast to SharedDictionary struct
+  // SharedDictionary* dict = static_cast<SharedDictionary*>(ptr);
 
-  // Add key-value pairs
-  dict->count = 3;  // Number of key-value pairs
-  strcpy(dict->entries[0].key, "Name");
-  strcpy(dict->entries[0].value, "Alice");
+  // // Add key-value pairs
+  // dict->count = 3;  // Number of key-value pairs
+  // strcpy(dict->entries[0].key, "Name");
+  // strcpy(dict->entries[0].value, "Alice");
 
-  strcpy(dict->entries[1].key, "Age");
-  strcpy(dict->entries[1].value, "25");
+  // strcpy(dict->entries[1].key, "Age");
+  // strcpy(dict->entries[1].value, "25");
 
-  strcpy(dict->entries[2].key, "Country");
-  strcpy(dict->entries[2].value, "India");
+  // strcpy(dict->entries[2].key, "Country");
+  // strcpy(dict->entries[2].value, "India");
 
-  std::cout << "Writer: Dictionary written to shared memory!" << std::endl;
+  // std::cout << "Writer: Dictionary written to shared memory!" << std::endl;
 
   /*L S Yaswanth Kumar*/
 
