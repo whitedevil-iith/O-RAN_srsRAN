@@ -249,6 +249,7 @@ services:
       - SYS_NICE
       - SYS_RESOURCE
       - NET_ADMIN
+      - CAP_IPC_LOCK
     env_file:
       - .env
     depends_on:
@@ -276,6 +277,7 @@ services:
       - SYS_NICE
       - SYS_RESOURCE
       - NET_ADMIN
+      - CAP_IPC_LOCK
     env_file:
       - .env
     depends_on:
@@ -303,6 +305,7 @@ services:
       - SYS_NICE
       - SYS_RESOURCE
       - NET_ADMIN
+      - CAP_IPC_LOCK
     env_file:
       - .env
     depends_on:
@@ -330,6 +333,7 @@ services:
       - SYS_NICE
       - SYS_RESOURCE
       - NET_ADMIN
+      - CAP_IPC_LOCK
     env_file:
       - .env
     depends_on:
