@@ -612,14 +612,14 @@ int main(int argc, char** argv)
     }
   }
 
-  /*L S Yaswanth Kumar*/
+  // /*L S Yaswanth Kumar*/
     
-  // Cleanup
-  munmap(ptr, SHM_SIZE);
-  close(shm_fd);
-  shm_unlink(SHM_NAME);
+  // // Cleanup
+  // munmap(ptr, SHM_SIZE);
+  // close(shm_fd);
+  // shm_unlink(SHM_NAME);
   
-  /*L S Yaswanth Kumar*/
+  // /*L S Yaswanth Kumar*/
 
   // Stop O-CU-UP activity.
   o_cuup_unit.unit->get_power_controller().stop();
