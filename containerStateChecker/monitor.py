@@ -4,6 +4,25 @@ import psutil
 import signal
 import sys
 from datetime import datetime
+import argparse  # Import argparse for command-line argument parsing
+
+# Set up argparse to handle command-line arguments
+parser = argparse.ArgumentParser(description="Start and monitor system with resource constraints.")
+parser.add_argument("--resource-constraint", type=str, required=False, help="Specify resource constraints for the system.")
+args = parser.parse_args()
+
+resource_constraint = args.resource_constraint
+
+# Handle the resource constraint argument
+if args.resource_constraint=='yes':
+    print(f"Resource constraints set to: {args.resource_constraint}")
+else:
+    print("No resource constraints provided.")
+    
+
+result = subprocess.run("pwd", capture_output=True, text=True)
+pwd = result.stdout.strip()
+print(f'Current working directory is {pwd}')
 
 # Define processes and containers to manage
 # processes_to_monitor = ["stresser/stresser.py", "trafficGenerator/trafficGenerator.py"]
@@ -65,51 +84,29 @@ def start_processes():
 def restart_services():
     print("Restarting RIC and RAN...")
 
-    result = subprocess.run("pwd", capture_output=True, text=True)
-    pwd = result.stdout.strip()
-    print(f'Current working directory is {pwd}')
+    if(resource_constraint=='yes'):
+        subprocess.run(f"chmod +x {pwd}/RAN/wait_for_log.sh", shell=True)
 
-    subprocess.run(f"chmod +x {pwd}/RAN/wait_for_log.sh", shell=True)
+        subprocess.run(f"cd {pwd}/RIC/oran-sc-ric && docker compose up -d", shell=True)
+        subprocess.run(f"cd {pwd} && docker compose -f docker-compose-cu++.yaml up -d", shell=True)
 
-    subprocess.run(f"cd {pwd}/RIC/oran-sc-ric && docker compose up -d", shell=True)
-    subprocess.run(f"cd {pwd} && docker compose -f docker-compose-cu++.yaml up -d", shell=True)
+        CU_Count = 0
+        DU_Count = 0
 
-    CU_Count = 0
-    DU_Count = 0
+        while(CU_Count<4):
+            wait_for_log(f'srscu{CU_Count}', 'F1-C')
+            CU_Count += 1
 
-    while(CU_Count<4):
-        wait_for_log(f'srscu{CU_Count}', 'F1-C')
-        CU_Count += 1
-
-    subprocess.run(f"cd {pwd} && docker compose -f docker-compose-du.yaml up -d", shell=True)
+        subprocess.run(f"cd {pwd} && docker compose -f docker-compose-du.yaml up -d", shell=True)
+        
+        while(DU_Count<4):
+            wait_for_log(f'srsdu{DU_Count}', '==== DU started ===')
+            DU_Count += 1
+        subprocess.run(f"cd {pwd} && docker compose -f docker-compose-ue++.yaml up -d", shell=True)
+    else:
+        subprocess.run(f"cd {pwd}/RIC/oran-sc-ric && docker compose up -d", shell=True)
+        subprocess.run(f"cd {pwd} && docker compose -f docker-compose.yaml up -d", shell=True)
     
-    while(DU_Count<4):
-        wait_for_log(f'srsdu{DU_Count}', '==== DU started ===')
-        DU_Count += 1
-    
-
-    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu0', 'F1-C']).returncode == 0:
-    #     print("CU0 is up")
-    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu1', 'F1-C']).returncode == 0:
-    #     print("CU1 is up")
-    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu2', 'F1-C']).returncode == 0:
-    #     print("CU2 is up")
-    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'cu3', 'F1-C']).returncode == 0:
-    #     print("CU3 is up")
-
-    # subprocess.run(f"cd {pwd} && docker compose -f docker-compose-du.yaml up -d", shell=True)
-    
-    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du0', '==== DU started ===']).returncode == 0:
-    #     print("DU0 is up")
-    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du1', '==== DU started ===']).returncode == 0:
-    #     print("DU1 is up")
-    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du2', '==== DU started ===']).returncode == 0:
-    #     print("DU2 is up")
-    # if subprocess.run([f'{pwd}/RAN/wait_for_log.sh', 'du3', '==== DU started ===']).returncode == 0:
-    #     print("DU3 is up")
-
-    subprocess.run(f"cd {pwd} && docker compose -f docker-compose-ue++.yaml up -d", shell=True)
-
 # Restart monitoring services
 def restart_monitoring():
     print("Restarting monitoring services...")

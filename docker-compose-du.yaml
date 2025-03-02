@@ -22,8 +22,8 @@ services:
   du0:
     container_name: srsdu0
     image: srsran:split_8_zmq
-    # stdin_open: true # docker run -i
-    # tty: true        # docker run -t
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     privileged: true
     cap_add:
       - SYS_NICE
@@ -51,8 +51,8 @@ services:
   du1:
     container_name: srsdu1
     image: srsran:split_8_zmq
-    # stdin_open: true # docker run -i
-    # tty: true        # docker run -t
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     privileged: true
     cap_add:
       - SYS_NICE
@@ -80,8 +80,8 @@ services:
   du2:
     container_name: srsdu2
     image: srsran:split_8_zmq
-    # stdin_open: true # docker run -i
-    # tty: true        # docker run -t
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     privileged: true
     cap_add:
       - SYS_NICE
@@ -109,8 +109,8 @@ services:
   du3:
     container_name: srsdu3
     image: srsran:split_8_zmq
-    # stdin_open: true # docker run -i
-    # tty: true        # docker run -t
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
     privileged: true
     cap_add:
       - SYS_NICE
