@@ -71,15 +71,15 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-    deploy:
-      resources:
-        limits:
-          cpus: "3.0"
-          memory: 3G
-        reservations:
-          cpus: "3.0"
-          memory: 2G
-    cpuset: "0,1,2"
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "4.0"
+    #       memory: 3G
+    #     reservations:
+    #       cpus: "3.0"
+    #       memory: 2G
+    # cpuset: "0,1,2"
 
   cu1:
     container_name: srscu1
@@ -102,15 +102,15 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-    deploy:
-      resources:
-        limits:
-          cpus: "3.0"
-          memory: 3G
-        reservations:
-          cpus: "3.0"
-          memory: 2G
-    cpuset: "3,4,5"
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "4.0"
+    #       memory: 3G
+    #     reservations:
+    #       cpus: "3.0"
+    #       memory: 2G
+    # cpuset: "3,4,5"
   
   cu2:
     container_name: srscu2
@@ -133,15 +133,15 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-    deploy:
-      resources:
-        limits:
-          cpus: "3.0"
-          memory: 3G
-        reservations:
-          cpus: "3.0"
-          memory: 2G
-    cpuset: "6,7,8"
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "4.0"
+    #       memory: 3G
+    #     reservations:
+    #       cpus: "3.0"
+    #       memory: 2G
+    # cpuset: "6,7,8"
 
   cu3:
     container_name: srscu3
@@ -164,15 +164,15 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-    deploy:
-      resources:
-        limits:
-          cpus: "3.0"
-          memory: 3G
-        reservations:
-          cpus: "3.0"
-          memory: 2G
-    cpuset: "9,10,11"
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: "4.0"
+    #       memory: 3G
+    #     reservations:
+    #       cpus: "3.0"
+    #       memory: 2G
+    # cpuset: "9,10,11"
 
 
 volumes:
