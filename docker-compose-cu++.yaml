@@ -71,7 +71,14 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 2G
+        reservations:
+          cpus: "3.0"
+          memory: 2G
 
   cu1:
     container_name: srscu1
@@ -94,7 +101,15 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 2G
+        reservations:
+          cpus: "3.0"
+          memory: 2G
+  
   cu2:
     container_name: srscu2
     image: srsran:split_8_zmq
@@ -116,7 +131,14 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 2G
+        reservations:
+          cpus: "3.0"
+          memory: 2G
 
   cu3:
     container_name: srscu3
@@ -139,7 +161,14 @@ services:
       5gc:
         condition: service_healthy
     command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 2G
+        reservations:
+          cpus: "3.0"
+          memory: 2G
   
   
   du0:
@@ -155,14 +184,21 @@ services:
       - /dev/bus/usb/:/dev/bus/usb/
       - /usr/share/uhd/images:/usr/share/uhd/images
       - ./RAN/du_zmq.conf:/config/du.conf
-      - ./RAN/wait_for_cu_starting.sh:/config/wait_for_cu_starting.sh
     networks:
       oran-intel:
         ipv4_address: 10.53.1.250
     depends_on:
       - cu0
       - 5gc
-    command: bash -c 'srsdu -c /config/du.conf'
+    command: srsdu -c /config/du.conf
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 3G
+        reservations:
+          cpus: "3.0"
+          memory: 3G
 
   du1:
     container_name: srsdu1
@@ -177,15 +213,21 @@ services:
       - /dev/bus/usb/:/dev/bus/usb/
       - /usr/share/uhd/images:/usr/share/uhd/images
       - ./RAN/du_zmq_1.conf:/config/du.conf
-      - ./RAN/wait_for_cu_starting.sh:/config/wait_for_cu_starting.sh
     networks:
       oran-intel:
         ipv4_address: 10.53.1.150
     depends_on:
       - cu1
       - 5gc
-    command: bash -c 'srsdu -c /config/du.conf'
-
+    command: srsdu -c /config/du.conf
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 3G
+        reservations:
+          cpus: "3.0"
+          memory: 3G
   
   du2:
     container_name: srsdu2
@@ -200,15 +242,21 @@ services:
       - /dev/bus/usb/:/dev/bus/usb/
       - /usr/share/uhd/images:/usr/share/uhd/images
       - ./RAN/du_zmq_2.conf:/config/du.conf
-      - ./RAN/wait_for_cu_starting.sh:/config/wait_for_cu_starting.sh
     networks:
       oran-intel:
         ipv4_address: 10.53.1.81
     depends_on:
       - cu2
       - 5gc
-    command: bash -c 'srsdu -c /config/du.conf'
-
+    command: srsdu -c /config/du.conf
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 3G
+        reservations:
+          cpus: "3.0"
+          memory: 3G
   
   du3:
     container_name: srsdu3
@@ -223,14 +271,21 @@ services:
       - /dev/bus/usb/:/dev/bus/usb/
       - /usr/share/uhd/images:/usr/share/uhd/images
       - ./RAN/du_zmq_3.conf:/config/du.conf
-      - ./RAN/wait_for_cu_starting.sh:/config/wait_for_cu_starting.sh
     networks:
       oran-intel:
         ipv4_address: 10.53.1.91
     depends_on:
       - cu3
       - 5gc
-    command: bash -c 'srsdu -c /config/du.conf'
+    command: srsdu -c /config/du.conf
+    deploy:
+      resources:
+        limits:
+          cpus: "3.0"
+          memory: 3G
+        reservations:
+          cpus: "3.0"
+          memory: 3G
 
   ue0:
     container_name: srsue0
@@ -257,7 +312,6 @@ services:
       - du0
     volumes:
       - ./UE/ue_zmq.conf:/configs/ue.conf
-      - /dev/null:/tmp
     environment:
       - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
       - PING=${PING}
@@ -284,7 +338,6 @@ services:
       - du1
     volumes:
       - ./UE/ue_zmq_1.conf:/configs/ue.conf
-      - /dev/null:/tmp
     environment:
       - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
       - PING=${PING}
@@ -311,7 +364,6 @@ services:
       - du2
     volumes:
       - ./UE/ue_zmq_2.conf:/configs/ue.conf
-      - /dev/null:/tmp
     environment:
       - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
       - PING=${PING}
@@ -338,7 +390,6 @@ services:
       - du3
     volumes:
       - ./UE/ue_zmq_3.conf:/configs/ue.conf
-      - /dev/null:/tmp
     environment:
       - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
       - PING=${PING}
