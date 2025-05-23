@@ -47,6 +47,11 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
+
+result = subprocess.run("pwd", capture_output=True, text=True)
+pwd = result.stdout.strip()
+print(f'Current working directory is {pwd}')
+
 # ================= Prometheus/InfluxDB Data Scraper =================
 
 class PrometheusClient:
@@ -339,7 +344,7 @@ def stress_loop():
             # Decide if stress should be applied
             # Read the list back from the file
             read_list = []
-            with open('traffic_distribution.txt', 'r') as file:
+            with open(f'{pwd}/trafficGenerator/traffic_distribution.txt', 'r') as file:
                 for line in file:
                     read_list.append(line.strip())  # .strip() removes the newline character
             if(float(read_list[1]) - float(read_list[0]) > 0):
