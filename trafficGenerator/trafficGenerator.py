@@ -10,6 +10,9 @@ iperf_client_pids = {}
 iperf_server_pid = None
 docker_ids = []
 open5gs_container_id = None
+previous_traffic = 0
+current_traffic = None
+
 
 def generate_random_sizes(total_ping_size, num_sizes, min_size=10000, max_size=60000):
     sizes = []
@@ -155,9 +158,19 @@ def main():
     ]
     distribution = [val / 16 for val in distribution]
 
+    i=0
     for hour, current_distribution in enumerate(distribution, start=1):
         temp_size = current_distribution * 1_000_000_000
         total_ping_size = int(temp_size // 3600)
+
+
+        current_traffic = distribution[i]
+
+        # Write the list to a file (one item per line)
+        with open('traffic_distribution.txt', 'w') as file:
+            for item in [previous_traffic, current_traffic]:
+                file.write(item + '\n')
+
 
         # print(f"Half Hour: {hour}")
         # print(f"Current Distribution: {current_distribution}")
@@ -192,5 +205,8 @@ def main():
 
             sizes = generate_random_sizes(total_ping_size, num_containers)
 
+        previous_traffic = current_traffic
+        i=i+1
+        current_traffic = distribution[i]
 if __name__ == "__main__":
     main()
