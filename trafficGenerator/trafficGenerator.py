@@ -13,6 +13,9 @@ open5gs_container_id = None
 previous_traffic = 0
 current_traffic = None
 
+result = subprocess.run("pwd", capture_output=True, text=True)
+pwd = result.stdout.strip()
+print(f'Current working directory is {pwd}')
 
 def generate_random_sizes(total_ping_size, num_sizes, min_size=10000, max_size=60000):
     sizes = []
@@ -159,17 +162,19 @@ def main():
     distribution = [val / 16 for val in distribution]
 
     i=0
+    
     for hour, current_distribution in enumerate(distribution, start=1):
         temp_size = current_distribution * 1_000_000_000
         total_ping_size = int(temp_size // 3600)
 
-
+        previous_traffic = distribution[i-1]
         current_traffic = distribution[i]
 
+
         # Write the list to a file (one item per line)
-        with open('traffic_distribution.txt', 'w') as file:
+        with open(f'{pwd}/trafficGenerator/traffic_distribution.txt', 'w') as file:
             for item in [previous_traffic, current_traffic]:
-                file.write(item + '\n')
+                file.write(str(item) + '\n')
 
 
         # print(f"Half Hour: {hour}")
