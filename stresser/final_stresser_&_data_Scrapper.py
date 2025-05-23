@@ -99,7 +99,6 @@ async def process_batch(client: PrometheusClient, queries: List[str]) -> Dict[st
     results = await asyncio.gather(*tasks)
     return dict(zip(queries, results))
 
-
 async def fetch_influx_data() -> pd.DataFrame:
     dataFrame = {}
     uniqueFields = []
@@ -117,7 +116,41 @@ async def fetch_influx_data() -> pd.DataFrame:
         
         
         
+
+
+   
         
+        fields = ['bsr', 'cqi', 'dl_brate', 'dl_bs', 'dl_mcs', 'dl_nof_nok', 'dl_nof_ok', 'pucch_snr_db', 'pucch_ta_ns', 'pusch_snr_db', 'pusch_ta_ns', 'ri', 'srs_ta_ns', 'ta_ns', 'ul_brate', 'ul_mcs', 'ul_nof_nok', 'ul_nof_ok']
+        data = {}
+        for field in fields:
+            for PCI in range(1, 5):
+                pci=PCI
+                rnti = 4601
+
+                dummy_query = f'''
+                from(bucket: "srsran")
+                |> range(start:-30s)
+                |> filter(fn: (r) => r["_measurement"] == "ue_info")
+                |> filter(fn: (r) => r["_field"] == "{field}")
+                |> filter(fn: (r) => r["pci"] == "{pci}")
+                |> filter(fn: (r) => r["rnti"] == "{rnti}")
+                |> filter(fn: (r) => r["testbed"] == "default")
+                '''
+
+                dummy_records = await query_api.query_stream(dummy_query)
+                values = []
+                async for record in dummy_records:
+                    if(record['_value']!='n/a' and record['_value']!=None):
+                        values.append(float(record['_value']))
+                    else:
+                        values.append(0)
+                key = f"PCI-{record['pci']}_RNTI-{record['rnti']}_{record['_field']}"
+                if(len(values)!=0):
+                    data[key]= sum(values)/len(values)
+                else:
+                    data[key]= 0
+
+        # print(data)        
         # Active_UEs_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")\n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dl_brate\")\n  |> map(fn: (r) => ({ r with ue_id: r[\"pci\"]+\".\"+r[\"rnti\"]}))\n  |> window(every: 2s)\n  |> group(columns: [\"_stop\"])\n  |> unique(column: \"ue_id\")\n  |> count(column: \"ue_id\")\n  |> map(fn: (r) => ({ r with _value: r[\"ue_id\"] }))\n  |> drop(columns: [\"ue_id\"])\n  |> group()\n"
         # Current_Total_Downlink_Bitrate_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")\n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dl_brate\")\n  |> window(every: 1s)\n  |> group(columns: [\"_stop\"])\n  |> sum(column: \"_value\")\n  |> group()\n  |> movingAverage(n: 2)\n  "
         # Maximum_Total_Downlink_Bitrate_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")\n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dl_brate\")\n  |> window(every: 1s)\n  |> group(columns: [\"_stop\"])\n  |> sum(column: \"_value\")\n  |> group()\n  |> movingAverage(n: 2)\n "
@@ -136,25 +169,25 @@ async def fetch_influx_data() -> pd.DataFrame:
 
 
 
-        # Execute the query
-        records = await query_api.query_stream(query)
+        # # Execute the query
+        # records = await query_api.query_stream(query)
 
-        # Process records and populate dataFrame
-        async for record in records:
-            if(record['_field'] not in uniqueFields):
-                uniqueFields.append(record['_field'])
-            key = f"PCI-{record['pci']}_RNTI-{record['rnti']}_{record['_field']}"
-            if key in dataFrame and (record['_value']!='n/a' and record['_value']!=None):
-                dataFrame[key].append(float(record['_value']))
-            elif(key in dataFrame):
-                dataFrame[key].append(0)
-            else:
-                dataFrame[key] = [0]
-        print(uniqueFields)
-        # Calculate the averages and create a pandas DataFrame
-        data = [{key: sum(values) / len(values)} for key, values in dataFrame.items()]
-        df = pd.DataFrame(data)
-#        print(df)
+        # # Process records and populate dataFrame
+        # async for record in records:
+        #     if(record['_field'] not in uniqueFields):
+        #         uniqueFields.append(record['_field'])
+        #     key = f"PCI-{record['pci']}_RNTI-{record['rnti']}_{record['_field']}"
+        #     if key in dataFrame and (record['_value']!='n/a' and record['_value']!=None):
+        #         dataFrame[key].append(float(record['_value']))
+        #     elif(key in dataFrame):
+        #         dataFrame[key].append(0)
+        #     else:
+        #         dataFrame[key] = [0]
+        # print(uniqueFields)
+        # # Calculate the averages and create a pandas DataFrame
+        # data = [{key: sum(values) / len(values)} for key, values in dataFrame.items()]
+        df = pd.DataFrame([data])        
+        # print(df)
         return df
 
 # ================= Container Stress Functions =================
@@ -407,7 +440,7 @@ async def main():
             # Fetch InfluxDB data (one row only)
             influxDF = await fetch_influx_data()
             if not influxDF.empty:
-                influx_data = influxDF.iloc[0].to_dict()
+                influx_data = influxDF.iloc[-1].to_dict()
             else:
                 influx_data = {}
 
@@ -429,7 +462,7 @@ async def main():
                 **stress_data_formatted
             }
 
-            # print("InflucData = ", influx_data)
+            # print("\nInflucData = ", influx_data)
             # Write the combined data to CSV (appending a row each cycle)
             with open(OUTPUT_FILE, "a", newline="") as f:
                 writer = csv.DictWriter(f, fieldnames=combined_data.keys())
