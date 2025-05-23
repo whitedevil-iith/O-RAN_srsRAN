@@ -30,6 +30,8 @@ influxDB_Token = "605bc59413b7d5457d181ccf20f9fda15693f81b068d70396cc183081b264f
 org = "srs"
 bucket = "srsran"
 
+traffic_file = "trafficGenerator/traffic_distribution.txt"
+
 PROMETHEUS_URL = "http://localhost:9090"
 INPUT_FILE = "dataScrapper/allPromQuery.txt"
 OUTPUT_FILE = "dataScrapper/prometheus_combined.csv"
@@ -335,7 +337,15 @@ def stress_loop():
                 continue  # Skip if no container name
 
             # Decide if stress should be applied
-            is_stress = np.random.choice([0, 1], p=[0.6, 0.4])
+            # Read the list back from the file
+            read_list = []
+            with open('traffic_distribution.txt', 'r') as file:
+                for line in file:
+                    read_list.append(line.strip())  # .strip() removes the newline character
+            if(float(read_list[1]) - float(read_list[0]) > 0):
+                is_stress = np.random.choice([0, 1], p=[0.2, 0.8])
+            else:
+                is_stress = 0
             if is_stress == 0:
                 perc_start, perc_end = 0, 0
             else:
