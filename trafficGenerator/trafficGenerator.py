@@ -214,5 +214,5 @@ def main():
         i=i+1
         current_traffic = distribution[i]
 if __name__ == "__main__":
-    while true:
+    while True:
         main()
