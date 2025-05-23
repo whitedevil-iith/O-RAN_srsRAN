@@ -94,27 +94,61 @@ async def process_batch(client: PrometheusClient, queries: List[str]) -> Dict[st
 
 
 async def fetch_influx_data() -> pd.DataFrame:
+    dataFrame = {}
+    uniqueFields = []
     async with InfluxDBClientAsync(url="http://10.40.1.5:8086", token=influxDB_Token, org=org) as client:
+        # Stream of FluxRecords
         query_api = client.query_api()
+        
+        # Flux query to get all records for the last 2 seconds
         query = '''
         from(bucket: "srsran")
-          |> range(start: -10s)
+          |> range(start: -60s)
           |> filter(fn: (r) => r["_measurement"] == "ue_info")
           |> filter(fn: (r) => r["testbed"] == "default")
         '''
-        records = await query_api.query_stream(query)
-        data = []
-        async for record in records:
-            try:
-                average = float(record['_value'])
-            except ValueError:
-                average = 0.0
-            data.append({
-                "key": f"{record['pci']}{record['rnti']}{record['_field']}",
-                "average": average
-            })
-        return pd.DataFrame(data)
+        
+        
+        
+        
+        # Active_UEs_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")\n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dl_brate\")\n  |> map(fn: (r) => ({ r with ue_id: r[\"pci\"]+\".\"+r[\"rnti\"]}))\n  |> window(every: 2s)\n  |> group(columns: [\"_stop\"])\n  |> unique(column: \"ue_id\")\n  |> count(column: \"ue_id\")\n  |> map(fn: (r) => ({ r with _value: r[\"ue_id\"] }))\n  |> drop(columns: [\"ue_id\"])\n  |> group()\n"
+        # Current_Total_Downlink_Bitrate_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")\n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dl_brate\")\n  |> window(every: 1s)\n  |> group(columns: [\"_stop\"])\n  |> sum(column: \"_value\")\n  |> group()\n  |> movingAverage(n: 2)\n  "
+        # Maximum_Total_Downlink_Bitrate_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")\n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dl_brate\")\n  |> window(every: 1s)\n  |> group(columns: [\"_stop\"])\n  |> sum(column: \"_value\")\n  |> group()\n  |> movingAverage(n: 2)\n "
+        # Num_Cells_with_Active_UEs_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")\n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dl_brate\")\n  |> window(every: 2s)\n  |> group(columns: [\"_stop\"])\n  |> unique(column: \"pci\")\n  |> count(column: \"pci\")\n  |> map(fn: (r) => ({ r with _value: r[\"pci\"] }))\n  |> drop(columns: [\"pci\"])\n  |> group()\n"
+        # Downlink_Bitrate_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")\n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dl_brate\")\n"
+        # Downlink_MCS_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")  \n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dl_mcs\")"
+        # Uplink_Bitrate_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")\n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"ul_brate\")\n"
+        # Uplink_MCS_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")  \n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"ul_mcs\")"
+        # Uplink_SNR_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")  \n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"pusch_snr_db\")"
+        # CQI_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")  \n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"cqi\")"
 
+        # queries = [Active_UEs_query, Current_Total_Downlink_Bitrate_query, Maximum_Total_Downlink_Bitrate_query, Num_Cells_with_Active_UEs_query,
+        #              Downlink_Bitrate_query, Downlink_MCS_query, Uplink_Bitrate_query, Uplink_MCS_query, Uplink_SNR_query, CQI_query]
+
+
+
+
+
+        # Execute the query
+        records = await query_api.query_stream(query)
+
+        # Process records and populate dataFrame
+        async for record in records:
+            if(record['_field'] not in uniqueFields):
+                uniqueFields.append(record['_field'])
+            key = f"PCI-{record['pci']}_RNTI-{record['rnti']}_{record['_field']}"
+            if key in dataFrame and (record['_value']!='n/a' and record['_value']!=None):
+                dataFrame[key].append(float(record['_value']))
+            elif(key in dataFrame):
+                dataFrame[key].append(0)
+            else:
+                dataFrame[key] = [0]
+        print(uniqueFields)
+        # Calculate the averages and create a pandas DataFrame
+        data = [{key: sum(values) / len(values)} for key, values in dataFrame.items()]
+        df = pd.DataFrame(data)
+#        print(df)
+        return df
 
 # ================= Container Stress Functions =================
 
@@ -380,6 +414,7 @@ async def main():
                 **stress_data_formatted
             }
 
+            # print("InflucData = ", influx_data)
             # Write the combined data to CSV (appending a row each cycle)
             with open(OUTPUT_FILE, "a", newline="") as f:
                 writer = csv.DictWriter(f, fieldnames=combined_data.keys())
