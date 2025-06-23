@@ -81,7 +81,7 @@ pcap:
 
 
 metrics: 
-  addr: 175.53.2.10                       # Optional TEXT:IPV4 (127.0.0.1). Sets the metrics address. Supported: IPV4 address.
+  addr: 175.40.1.4                       # Optional TEXT:IPV4 (127.0.0.1). Sets the metrics address. Supported: IPV4 address.
   port: 55555                           # Optional UINT. Sets the metrics UPD port. Supported: [0 - 65535].
   layers:
       enable_app_usage: true

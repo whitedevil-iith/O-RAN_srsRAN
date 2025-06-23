@@ -34,7 +34,7 @@ services:
       - ./RAN/du_zmq.conf:/config/du.conf
     networks:
       oran-intel:
-        ipv4_address: 10.53.1.250
+        ipv4_address: 175.53.1.10
     # depends_on:
     #   - cu0
     #   - 5gc
@@ -63,7 +63,7 @@ services:
       - ./RAN/du_zmq_1.conf:/config/du.conf
     networks:
       oran-intel:
-        ipv4_address: 10.53.1.150
+        ipv4_address: 175.53.1.13
     # depends_on:
     #   - cu1
     #   - 5gc
@@ -92,7 +92,7 @@ services:
       - ./RAN/du_zmq_2.conf:/config/du.conf
     networks:
       oran-intel:
-        ipv4_address: 10.53.1.81
+        ipv4_address: 175.53.1.14
     # depends_on:
     #   - cu2
     #   - 5gc
@@ -106,34 +106,34 @@ services:
           cpus: "3.0"
           memory: 3G
   
-  du3:
-    container_name: srsdu3
-    image: srsran:split_8_zmq
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
-    privileged: true
-    cap_add:
-      - SYS_NICE
-      - CAP_SYS_PTRACE
-    volumes:
-      - /dev/bus/usb/:/dev/bus/usb/
-      - /usr/share/uhd/images:/usr/share/uhd/images
-      - ./RAN/du_zmq_3.conf:/config/du.conf
-    networks:
-      oran-intel:
-        ipv4_address: 10.53.1.91
-    # depends_on:
-    #   - cu3
-    #   - 5gc
-    command: srsdu -c /config/du.conf
-    deploy:
-      resources:
-        limits:
-          cpus: "3.0"
-          memory: 3G
-        reservations:
-          cpus: "3.0"
-          memory: 3G
+  # du3:
+  #   container_name: srsdu3
+  #   image: srsran:split_8_zmq
+  #   stdin_open: true # docker run -i
+  #   tty: true        # docker run -t
+  #   privileged: true
+  #   cap_add:
+  #     - SYS_NICE
+  #     - CAP_SYS_PTRACE
+  #   volumes:
+  #     - /dev/bus/usb/:/dev/bus/usb/
+  #     - /usr/share/uhd/images:/usr/share/uhd/images
+  #     - ./RAN/du_zmq_3.conf:/config/du.conf
+  #   networks:
+  #     oran-intel:
+  #       ipv4_address: 10.53.1.91
+  #   # depends_on:
+  #   #   - cu3
+  #   #   - 5gc
+  #   command: srsdu -c /config/du.conf
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: "3.0"
+  #         memory: 3G
+  #       reservations:
+  #         cpus: "3.0"
+  #         memory: 3G
 
   redis:
     image: redis:latest

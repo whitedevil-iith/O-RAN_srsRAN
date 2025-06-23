@@ -26,9 +26,10 @@ print(f'Current working directory is {pwd}')
 
 # Define processes and containers to manage
 # processes_to_monitor = ["stresser/stresser.py", "trafficGenerator/trafficGenerator.py"]
-processes_to_monitor = [f"{pwd}/stresser/final_stresser_&_data_Scrapper.py", f"{pwd}/trafficGenerator/trafficGenerator.py"]
-containers_to_check = ["srscu0", "srscu1", "srscu2", "srscu3", "srsdu3", "srsdu2", "srsdu1", "srsdu0"]
-containers_to_check_logs = ["srsue0", "srsue1", "srsue2", "srsue3"]
+# processes_to_monitor = [f"{pwd}/stresser/final_stresser_&_data_Scrapper.py", f"{pwd}/trafficGenerator/trafficGenerator.py"]
+processes_to_monitor = [f"{pwd}/trafficGenerator/trafficGenerator.py"]
+containers_to_check = ["srscu0", "srscu1", "srsdu2", "srsdu1", "srsdu0"]
+containers_to_check_logs = ["srsue0", "srsue1", "srsue2"]
 log_keyword = "Received RRC Release"
 
 def wait_for_log(container_name, log_string):
@@ -82,10 +83,10 @@ def start_processes():
 
 # Restart Docker services
 def restart_services():
-    print("Restarting RIC and RAN...")
+    print("Restarting RAN...")
 
     if(resource_constraint=='yes'):
-        subprocess.run(f"cd {pwd}/RIC/oran-sc-ric && docker compose up -d", shell=True)
+        # subprocess.run(f"cd {pwd}/RIC/oran-sc-ric && docker compose up -d", shell=True)
         subprocess.run(f"cd {pwd} && docker compose -f docker-compose-cu++.yaml up -d", shell=True)
 
         CU_Count = 0
@@ -102,7 +103,7 @@ def restart_services():
             DU_Count += 1
         subprocess.run(f"cd {pwd} && docker compose -f docker-compose-ue++.yaml up -d", shell=True)
     else:
-        subprocess.run(f"cd {pwd}/RIC/oran-sc-ric && docker compose up -d", shell=True)
+        # subprocess.run(f"cd {pwd}/RIC/oran-sc-ric && docker compose up -d", shell=True)
         subprocess.run(f"cd {pwd} && docker compose -f docker-compose.yaml up -d", shell=True)
     
 # Restart monitoring services

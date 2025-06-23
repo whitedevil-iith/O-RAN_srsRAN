@@ -47,59 +47,11 @@ services:
       - PING=${PING}
     networks:
       oran-intel:
-        ipv4_address: 10.53.1.251
+        ipv4_address: 175.53.2.1
     command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf'
 
   ue1:
     container_name: srsue1
-    image: srsue:split_8_zmq
-    user: root
-    devices:
-      - /dev/net/tun
-    cap_add:
-      - SYS_NICE
-      - SYS_RESOURCE
-      - NET_ADMIN
-      - CAP_IPC_LOCK
-    env_file:
-      - .env
-    volumes:
-      - ./UE/ue_zmq_1.conf:/configs/ue.conf
-      - /dev/null:/tmp/ue.log
-    environment:
-      - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
-      - PING=${PING}
-    networks:
-      oran-intel:
-        ipv4_address: 10.53.1.151
-    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf'
-
-  ue2:
-    container_name: srsue2
-    image: srsue:split_8_zmq
-    user: root
-    devices:
-      - /dev/net/tun
-    cap_add:
-      - SYS_NICE
-      - SYS_RESOURCE
-      - NET_ADMIN
-      - CAP_IPC_LOCK
-    env_file:
-      - .env
-    volumes:
-      - ./UE/ue_zmq_2.conf:/configs/ue.conf
-      - /dev/null:/tmp/ue.log
-    environment:
-      - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
-      - PING=${PING}
-    networks:
-      oran-intel:
-        ipv4_address: 10.53.1.82
-    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf'
-
-  ue3:
-    container_name: srsue3
     image: srsue:split_8_zmq
     user: root
     devices:
@@ -117,11 +69,59 @@ services:
     environment:
       - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
       - PING=${PING}
-      - PING_IP=${PING_IP_3}
     networks:
       oran-intel:
-        ipv4_address: 10.53.1.92
+        ipv4_address: 175.53.3.1
     command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf'
+
+  ue2:
+    container_name: srsue2
+    image: srsue:split_8_zmq
+    user: root
+    devices:
+      - /dev/net/tun
+    cap_add:
+      - SYS_NICE
+      - SYS_RESOURCE
+      - NET_ADMIN
+      - CAP_IPC_LOCK
+    env_file:
+      - .env
+    volumes:
+      - ./UE/ue_zmq_6.conf:/configs/ue.conf
+      - /dev/null:/tmp/ue.log
+    environment:
+      - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
+      - PING=${PING}
+    networks:
+      oran-intel:
+        ipv4_address: 175.53.4.1
+    command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf'
+
+  # ue3:
+  #   container_name: srsue3
+  #   image: srsue:split_8_zmq
+  #   user: root
+  #   devices:
+  #     - /dev/net/tun
+  #   cap_add:
+  #     - SYS_NICE
+  #     - SYS_RESOURCE
+  #     - NET_ADMIN
+  #     - CAP_IPC_LOCK
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./UE/ue_zmq_3.conf:/configs/ue.conf
+  #     - /dev/null:/tmp/ue.log
+  #   environment:
+  #     - LD_LIBRARY_PATH=/srsue_4G/lib/src/phy/rf/
+  #     - PING=${PING}
+  #     - PING_IP=${CORE_IP}
+  #   networks:
+  #     oran-intel:
+  #       ipv4_address: 10.53.1.92
+  #   command: bash -c '/srsue_4G/srsue/src/srsue /configs/ue.conf'
 
   metrics-server:
     container_name: metrics_server
@@ -139,7 +139,7 @@ services:
       - 55555:${METRICS_SERVER_PORT}/udp
     networks:
       oran-intel:
-        ipv4_address: 10.40.1.4 
+        ipv4_address: 175.40.1.4 
 
   influxdb:
     container_name: influxdb
@@ -154,7 +154,7 @@ services:
       - 8086:${DOCKER_INFLUXDB_INIT_PORT}
     networks:
       oran-intel:
-        ipv4_address: 10.40.1.5
+        ipv4_address: 175.40.1.5
 
   grafana:
     container_name: grafana
@@ -172,7 +172,7 @@ services:
       - 3300:${GRAFANA_PORT}
     networks:
       oran-intel:
-        ipv4_address: 10.40.1.6
+        ipv4_address: 175.40.1.6
 
   # node-exporter:
   #   image: prom/node-exporter:latest
@@ -243,7 +243,7 @@ services:
     - 6379:6379
     networks:
       oran-intel:
-        ipv4_address: 10.24.0.1
+        ipv4_address: 175.24.0.1
 
 
 volumes:

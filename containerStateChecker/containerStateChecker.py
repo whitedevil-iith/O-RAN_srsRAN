@@ -14,11 +14,11 @@ commands = [
     "screen -r OTHERS -X stuff \"cd /home/newsl/workspace/O-RAN_srsRAN && ps aux | grep 'dataScrapper.py' | grep -v grep | awk '{print $2}' | xargs kill -9\n\"",
 
     # Stop running services using Ctrl+C
-    "screen -r RIC -X stuff $'\003'",  # Send Ctrl+C to stop RIC
+    # "screen -r RIC -X stuff $'\003'",  # Send Ctrl+C to stop RIC
     "screen -r RAN -X stuff $'\003'",  # Send Ctrl+C to stop RAN
 
     # Restart RIC and RAN
-    "screen -r RIC -X stuff \"cd /home/newsl/workspace/O-RAN_srsRAN/RIC/oran-sc-ric && docker compose up\n\"",
+    # "screen -r RIC -X stuff \"cd /home/newsl/workspace/O-RAN_srsRAN/RIC/oran-sc-ric && docker compose up\n\"",
     "screen -r RAN -X stuff \"cd /home/newsl/workspace/O-RAN_srsRAN && docker compose up\n\"",
 
     # Restart Monitoring Services
@@ -34,8 +34,8 @@ commands = [
 
     
 def monitor_containers():
-    containers_to_check = ["srscu0", "srscu1", "srscu2", "srscu3", "srsdu3", "srsdu2", "srsdu1", "srsdu0"]
-    containers_to_check_logs = ["srsue0", "srsue1", "srsue2", "srsue3"]
+    containers_to_check = ["srscu0", "srscu1", "srsdu2", "srsdu1", "srsdu0"]
+    containers_to_check_logs = ["srsue0", "srsue1", "srsue2"]
     log_keyword = "Received RRC Release"
 
     while True:
@@ -78,7 +78,7 @@ def monitor_containers():
                 print("Running commands")
                 for command in commands:
                     result = subprocess.run(command, capture_output=True, text=True, shell=True)
-                    if("RIC" in command or "RAN" in command):
+                    if("RAN" in command):
                         sleep(3)
                 return
             time.sleep(1)

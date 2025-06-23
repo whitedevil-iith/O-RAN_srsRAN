@@ -43,7 +43,7 @@ services:
       retries: 60
     networks:
       oran-intel:
-        ipv4_address: ${OPEN5GS_IP:-10.53.1.2}
+        ipv4_address: ${OPEN5GS_IP:-175.53.1.2}
 
   cu0:
     container_name: srscu0
@@ -66,7 +66,7 @@ services:
       - ./RAN/cu_0.yml:/config/cu.conf
     networks:
       oran-intel:
-        ipv4_address: 10.53.1.240
+        ipv4_address: 175.53.10.1
     depends_on:
       5gc:
         condition: service_healthy
@@ -97,7 +97,7 @@ services:
       - ./RAN/cu_1.yml:/config/cu.conf
     networks:
       oran-intel:
-        ipv4_address: 10.53.1.140
+        ipv4_address: 175.53.10.2
     depends_on:
       5gc:
         condition: service_healthy
@@ -112,67 +112,67 @@ services:
           memory: 2G
     # cpuset: "3,4,5"
   
-  cu2:
-    container_name: srscu2
-    image: srsran:split_8_zmq
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
-    privileged: true
-    cap_add:
-      - SYS_NICE
-      - CAP_SYS_PTRACE
-    volumes:
-      - /dev/bus/usb/:/dev/bus/usb/
-      - /usr/share/uhd/images:/usr/share/uhd/images
-      - ./RAN/entrypoint_2.sh:/tmp/entrypoint.sh
-      - ./RAN/cu_2.yml:/config/cu.conf
-    networks:
-      oran-intel:
-        ipv4_address: 10.53.1.80
-    depends_on:
-      5gc:
-        condition: service_healthy
-    command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-    deploy:
-      resources:
-        limits:
-          cpus: "3.0"
-          memory: 2G
-        reservations:
-          cpus: "3.0"
-          memory: 2G
-    # cpuset: "6,7,8"
+  # cu2:
+  #   container_name: srscu2
+  #   image: srsran:split_8_zmq
+  #   stdin_open: true # docker run -i
+  #   tty: true        # docker run -t
+  #   privileged: true
+  #   cap_add:
+  #     - SYS_NICE
+  #     - CAP_SYS_PTRACE
+  #   volumes:
+  #     - /dev/bus/usb/:/dev/bus/usb/
+  #     - /usr/share/uhd/images:/usr/share/uhd/images
+  #     - ./RAN/entrypoint_2.sh:/tmp/entrypoint.sh
+  #     - ./RAN/cu_2.yml:/config/cu.conf
+  #   networks:
+  #     oran-intel:
+  #       ipv4_address: 10.53.1.80
+  #   depends_on:
+  #     5gc:
+  #       condition: service_healthy
+  #   command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: "3.0"
+  #         memory: 2G
+  #       reservations:
+  #         cpus: "3.0"
+  #         memory: 2G
+  #   # cpuset: "6,7,8"
 
-  cu3:
-    container_name: srscu3
-    image: srsran:split_8_zmq
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
-    privileged: true
-    cap_add:
-      - SYS_NICE
-      - CAP_SYS_PTRACE
-    volumes:
-      - /dev/bus/usb/:/dev/bus/usb/
-      - /usr/share/uhd/images:/usr/share/uhd/images
-      - ./RAN/entrypoint_3.sh:/tmp/entrypoint.sh
-      - ./RAN/cu_3.yml:/config/cu.conf
-    networks:
-      oran-intel:
-        ipv4_address: 10.53.1.90
-    depends_on:
-      5gc:
-        condition: service_healthy
-    command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
-    deploy:
-      resources:
-        limits:
-          cpus: "3.0"
-          memory: 2G
-        reservations:
-          cpus: "3.0"
-          memory: 2G
-    # cpuset: "9,10,11"
+  # cu3:
+  #   container_name: srscu3
+  #   image: srsran:split_8_zmq
+  #   stdin_open: true # docker run -i
+  #   tty: true        # docker run -t
+  #   privileged: true
+  #   cap_add:
+  #     - SYS_NICE
+  #     - CAP_SYS_PTRACE
+  #   volumes:
+  #     - /dev/bus/usb/:/dev/bus/usb/
+  #     - /usr/share/uhd/images:/usr/share/uhd/images
+  #     - ./RAN/entrypoint_3.sh:/tmp/entrypoint.sh
+  #     - ./RAN/cu_3.yml:/config/cu.conf
+  #   networks:
+  #     oran-intel:
+  #       ipv4_address: 10.53.1.90
+  #   depends_on:
+  #     5gc:
+  #       condition: service_healthy
+  #   command:  bash -c 'chmod +x /tmp/entrypoint.sh && /tmp/entrypoint.sh && srscu -c /config/cu.conf'
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: "3.0"
+  #         memory: 2G
+  #       reservations:
+  #         cpus: "3.0"
+  #         memory: 2G
+  #   # cpuset: "9,10,11"
 
 
 volumes:
