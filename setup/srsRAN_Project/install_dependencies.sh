@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2021-2024 Software Radio Systems Limited
+# Copyright 2021-2025 Software Radio Systems Limited
 #
 # This file is part of srsRAN
 #
@@ -40,11 +40,11 @@ main() {
     if [[ "$ID" == "debian" || "$ID" == "ubuntu" ]]; then
         if [[ "$mode" == "all" || "$mode" == "build" ]]; then
             DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-                cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev libzmq3-dev
+                libzmq3-dev cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
         fi
         if [[ "$mode" == "all" || "$mode" == "run" ]]; then
             DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \
-                libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev libzmq3-dev iproute2 libboost-all-dev libboost-program-options-dev stress-ng
+                libzmq3-dev libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev
         fi
         if [[ "$mode" == "all" || "$mode" == "extra" ]]; then
             DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y --no-install-recommends \

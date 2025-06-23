@@ -61,7 +61,7 @@ docker run hello-world
 ```
 Then, create the docker network required for the setup:
 ```bash
-docker network create --subnet=10.0.0.0/8 oran-intel
+docker network create --subnet=175.0.0.0/8 oran-intel
 ```
 
 ## Cloning and Setting Up srsRAN
@@ -71,7 +71,7 @@ docker network create --subnet=10.0.0.0/8 oran-intel
 cd RAN
 git clone https://github.com/srsran/srsRAN_Project.git
 cd srsRAN_Project
-git checkout e5d5b44
+git checkout d5fa4f0ecb
 cd ../..
 ```
 
