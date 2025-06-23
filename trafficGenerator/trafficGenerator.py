@@ -52,7 +52,8 @@ def get_ping_target_ip(container_id):
         if ip_int < 0:
             raise ValueError(f"Resulting IP address is invalid after decrement: {result}")
         decremented_ip = f"{(ip_int >> 24) & 0xFF}.{(ip_int >> 16) & 0xFF}.{(ip_int >> 8) & 0xFF}.{ip_int & 0xFF}"
-        return decremented_ip
+        # return decremented_ip
+        return "10.45.1.1"
     except (subprocess.CalledProcessError, ValueError) as e:
         print(f"Error retrieving or processing IP address for container {container_id}: {e}")
         return None

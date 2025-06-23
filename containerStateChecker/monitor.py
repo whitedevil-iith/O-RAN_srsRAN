@@ -26,8 +26,8 @@ print(f'Current working directory is {pwd}')
 
 # Define processes and containers to manage
 # processes_to_monitor = ["stresser/stresser.py", "trafficGenerator/trafficGenerator.py"]
-# processes_to_monitor = [f"{pwd}/stresser/final_stresser_&_data_Scrapper.py", f"{pwd}/trafficGenerator/trafficGenerator.py"]
-processes_to_monitor = [f"{pwd}/trafficGenerator/trafficGenerator.py"]
+processes_to_monitor = [f"{pwd}/stresser/final_stresser_&_data_Scrapper.py", f"{pwd}/trafficGenerator/trafficGenerator.py"]
+# processes_to_monitor = [f"{pwd}/trafficGenerator/trafficGenerator.py"]
 containers_to_check = ["srscu0", "srscu1", "srsdu2", "srsdu1", "srsdu0"]
 containers_to_check_logs = ["srsue0", "srsue1", "srsue2"]
 log_keyword = "Received RRC Release"
@@ -80,6 +80,7 @@ def start_processes():
         if not script_found:
             print(f"Starting process: {script}")
             subprocess.Popen(["python3", script], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            # subprocess.Popen(["python3", script])
 
 # Restart Docker services
 def restart_services():
@@ -92,13 +93,13 @@ def restart_services():
         CU_Count = 0
         DU_Count = 0
 
-        while(CU_Count<4):
+        while(CU_Count<2):
             wait_for_log(f'srscu{CU_Count}', 'F1-C')
             CU_Count += 1
 
         subprocess.run(f"cd {pwd} && docker compose -f docker-compose-du.yaml up -d", shell=True)
         
-        while(DU_Count<4):
+        while(DU_Count<3):
             wait_for_log(f'srsdu{DU_Count}', '==== DU started ===')
             DU_Count += 1
         subprocess.run(f"cd {pwd} && docker compose -f docker-compose-ue++.yaml up -d", shell=True)

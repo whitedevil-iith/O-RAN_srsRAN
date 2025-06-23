@@ -102,7 +102,7 @@ async def process_batch(client: PrometheusClient, queries: List[str]) -> Dict[st
 async def fetch_influx_data() -> pd.DataFrame:
     dataFrame = {}
     uniqueFields = []
-    async with InfluxDBClientAsync(url="http://10.40.1.5:8086", token=influxDB_Token, org=org) as client:
+    async with InfluxDBClientAsync(url="http://175.40.1.5:8086", token=influxDB_Token, org=org) as client:
         # Stream of FluxRecords
         query_api = client.query_api()
         
@@ -144,11 +144,12 @@ async def fetch_influx_data() -> pd.DataFrame:
                         values.append(float(record['_value']))
                     else:
                         values.append(0)
-                key = f"PCI-{record['pci']}_RNTI-{record['rnti']}_{record['_field']}"
-                if(len(values)!=0):
-                    data[key]= sum(values)/len(values)
-                else:
-                    data[key]= 0
+
+                    key = f"PCI-{record['pci']}_RNTI-{record['rnti']}_{record['_field']}"
+                    if(len(values)!=0):
+                        data[key]= sum(values)/len(values)
+                    else:
+                        data[key]= 0
 
         # print(data)        
         # Active_UEs_query = "from(bucket: \"srsran\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"ue_info\")\n  |> filter(fn: (r) => r[\"testbed\"] == \"default\")\n  |> filter(fn: (r) => r[\"_field\"] == \"dl_brate\")\n  |> map(fn: (r) => ({ r with ue_id: r[\"pci\"]+\".\"+r[\"rnti\"]}))\n  |> window(every: 2s)\n  |> group(columns: [\"_stop\"])\n  |> unique(column: \"ue_id\")\n  |> count(column: \"ue_id\")\n  |> map(fn: (r) => ({ r with _value: r[\"ue_id\"] }))\n  |> drop(columns: [\"ue_id\"])\n  |> group()\n"
@@ -369,6 +370,7 @@ def stress_loop():
         type_of_stress = np.random.choice([0, 1, 2, 3], p=[0.25, 0.25, 0.25, 0.25])
         
         threads = []
+        count=0
         for cid in container_ids:
             cname = get_container_name(cid)
             if not cname:
@@ -380,13 +382,15 @@ def stress_loop():
             with open(f'{pwd}/trafficGenerator/traffic_distribution.txt', 'r') as file:
                 for line in file:
                     read_list.append(line.strip())  # .strip() removes the newline character
-            if(float(read_list[1]) - float(read_list[0]) > 0):
+            if((float(read_list[1]) - float(read_list[0]) > 0) or count == 0):
                 is_stress = np.random.choice([0, 1], p=[0.2, 0.8])
             else:
                 is_stress = 0
+
             if is_stress == 0:
                 perc_start, perc_end = 0, 0
             else:
+                count = count + 1
                 if type_of_stress == 1:
                     perc_start = np.random.randint(40, 91)
                     perc_end = np.random.randint(perc_start, 101)
@@ -403,7 +407,7 @@ def stress_loop():
             )
             threads.append(t)
             t.start()
-
+        count = 0
         for t in threads:
             t.join()
 

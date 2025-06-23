@@ -142,7 +142,7 @@ services:
     - 6379:6379
     networks:
       oran-intel:
-        ipv4_address: 10.24.0.1
+        ipv4_address: 175.24.0.1
 
 
 volumes:

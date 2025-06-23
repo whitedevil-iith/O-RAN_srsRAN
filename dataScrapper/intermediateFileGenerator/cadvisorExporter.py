@@ -18,7 +18,7 @@ def extract_expressions(data):
 
 
 # Function to fetch docker container names
-def get_docker_container_names(password="2412"):
+def get_docker_container_names(password="darkangelLs$"):
     try:
         # Prepare the command that echoes the password into sudo and runs docker ps
         command = f"echo {password} | sudo -S docker ps --format '{{{{.Names}}}}'"
@@ -40,7 +40,7 @@ def get_docker_container_names(password="2412"):
 
 
 # Function to fetch all network interfaces
-def get_all_network_interfaces(password="2412"):
+def get_all_network_interfaces(password="darkangelLs$"):
     try:
         # Prepare the command to get network interfaces
         command = f"echo {password} | sudo -S ip a"

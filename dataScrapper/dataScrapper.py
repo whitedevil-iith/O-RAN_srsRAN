@@ -79,7 +79,7 @@ async def process_batch(client: PrometheusClient, queries: List[str]) -> Dict[st
 
 
 async def fetch_influx_data() -> pd.DataFrame:
-    async with InfluxDBClientAsync(url="http://10.40.1.5:8086", token=influxDB_Token, org=org) as client:
+    async with InfluxDBClientAsync(url="http://175.40.1.5:8086", token=influxDB_Token, org=org) as client:
         query_api = client.query_api()
         query = '''
         from(bucket: "srsran")
