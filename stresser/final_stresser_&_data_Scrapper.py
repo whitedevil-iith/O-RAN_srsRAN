@@ -365,41 +365,47 @@ def stress_loop():
             with stress_lock:
                 global_stress_data[cname] = [0, 0]
 
+    MAX_STRESS_CONTAINERS = 1  # Change this to your desired number
+
     while True:
         duration = random.randint(120, 300)
         type_of_stress = np.random.choice([0, 1, 2, 3], p=[0.25, 0.25, 0.25, 0.25])
         
         threads = []
-        count=0
+        stress_candidates = []
+        read_list = []
+
+        # Read the traffic distribution once
+        with open(f'{pwd}/trafficGenerator/traffic_distribution.txt', 'r') as file:
+            for line in file:
+                read_list.append(line.strip())
+
         for cid in container_ids:
             cname = get_container_name(cid)
             if not cname:
-                continue  # Skip if no container name
+                continue
 
-            # Decide if stress should be applied
-            # Read the list back from the file
-            read_list = []
-            with open(f'{pwd}/trafficGenerator/traffic_distribution.txt', 'r') as file:
-                for line in file:
-                    read_list.append(line.strip())  # .strip() removes the newline character
-            if((float(read_list[1]) - float(read_list[0]) > 0) or count == 0):
+            if ((float(read_list[1]) - float(read_list[0]) > 0) or len(stress_candidates) == 0):
                 is_stress = np.random.choice([0, 1], p=[0.2, 0.8])
             else:
                 is_stress = 0
 
-            if is_stress == 0:
-                perc_start, perc_end = 0, 0
+            if is_stress:
+                stress_candidates.append(cid)
+
+        # Select at most MAX_STRESS_CONTAINERS containers to stress
+        selected_cids = random.sample(stress_candidates, min(MAX_STRESS_CONTAINERS, len(stress_candidates)))
+
+        for cid in selected_cids:
+            if type_of_stress == 1:
+                perc_start = np.random.randint(40, 91)
+                perc_end = np.random.randint(perc_start, 101)
+            elif type_of_stress == 2:
+                perc_start = np.random.randint(25, 36)
+                perc_end = np.random.randint(perc_start, 61)
             else:
-                count = count + 1
-                if type_of_stress == 1:
-                    perc_start = np.random.randint(40, 91)
-                    perc_end = np.random.randint(perc_start, 101)
-                elif type_of_stress == 2:
-                    perc_start = np.random.randint(25, 36)
-                    perc_end = np.random.randint(perc_start, 61)
-                else:
-                    perc_start = np.random.randint(1, 4)
-                    perc_end = np.random.randint(perc_start, 5)
+                perc_start = np.random.randint(1, 4)
+                perc_end = np.random.randint(perc_start, 5)
 
             t = threading.Thread(
                 target=injectStress,
@@ -407,7 +413,7 @@ def stress_loop():
             )
             threads.append(t)
             t.start()
-        count = 0
+
         for t in threads:
             t.join()
 

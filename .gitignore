@@ -52,3 +52,4 @@ dataScrapper/new_dataScrapper.py
 stresser/0_new_stresser.py
 stresser/1_stresser.py
 stresser/new_stresser.py
+dataScrapper/*csv
