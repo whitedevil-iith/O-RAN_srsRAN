@@ -143,7 +143,7 @@ docker run -d --name=node-exporter --network=oran-intel -p 9100:9100 prom/node-e
 
 Then, start containerStateChecker/monitor.py
 ```bash
-nohup python3 containerStateChecker/monitor.py > /dev/null 2>&1 &
+nohup python3 containerStateChecker/monitor.py --resource-constraint yes > /dev/null 2>&1 &
 ```
 
 
